@@ -1,7 +1,5 @@
 #!/usr/local/bin/python3
 
-# NOTE 構文チェックが緩い
-
 import re
 import pprint as pp
 import argparse
@@ -14,16 +12,6 @@ def run():
     filename = args.filename
     with open(filename,'r') as f:
         code = f.readline()
-    # code = "%($x:(@).(*))(@)"
-    # code = "$x:(@).(*)"
-    # code = "x"
-    # code = "*"
-    # code = "%(*)(@)"
-    # code = "$x:(*).(@)"
-    # code1 = "co[($x:(@).(*))]"
-    # code2 = f"co[($x:({code1}).(*))]"
-    # code3 = f"co[($x:({code2}).({code2}))]"
-    # code = code2
     try:
         term = parse_term(code)
         print("succeed")
@@ -36,7 +24,7 @@ def run():
 class SyntaxError(Exception):
     pass
 
-# 項を構文解析する。失敗したら例外を投げる
+# 失敗したらSyntaxErrorを投げる
 def parse_term(code):
     if is_var(code):
         return {"tag": "var", "name": code}
@@ -91,7 +79,8 @@ def find_first_term(code):
     # 初めのかっこで正しく囲まれたコードを返す。
     # かっこの終わった次のインデックスも同時に返す
     # 該当する式がない場合、第二返り値を0とする
-    # e.g. %((M))(N)  --> (M)
+    # e.g. %((M))(N)  --> (M), 5
+    # idx: 012345
     count = 0
     start = -1
     end = -1

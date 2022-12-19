@@ -53,21 +53,27 @@ def parse_term(code):
         if not code[end] == ".":
             raise SyntaxError(f"parsing type in {code}\nexpect: '.', found: {code[end]}\n")
         code2, _ = find_first_term(code[end:])
+        t1 = parse_term(code1)
+        t2 = parse_term(code2)
         return {
             "tag": "type",
-            "children": [code1, code2],
+            "children": [t1, t2],
             "var": var
         }
     if is_const(code):
         op_name = get_op_name(code)
-        start = 0
+        fresh_code = code
         code_list = []
         while True:
-            code1, next_start = find_first_term(code[start:])
+            code1, next_start = find_first_term(fresh_code)
             if next_start == 0:
+                if fresh_code[next_start] != "]":
+                    raise SyntaxError(f"`{fresh_code}` {next_start} {fresh_code[next_start]}")
                 break
+            if not fresh_code[next_start] in [",", "]"]:
+                raise SyntaxError(f"`{fresh_code}` {next_start}")
             code_list.append(code1)
-            start = next_start
+            fresh_code = fresh_code[next_start:]
         term_list = list(map(lambda code: parse_term(code), code_list))
         return {"tag": "const", "children": term_list, "op": op_name}
 

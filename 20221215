@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# ./20221215 filename
+
+filename=$1
+python3.11 alpha-rqv.py "$filename"
+

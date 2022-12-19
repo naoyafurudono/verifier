@@ -7,7 +7,7 @@ import pprint as pp
 import argparse
 
 # ファイルを読んで、1行目が項であるかを判定する
-def main():
+def run():
     apaser = argparse.ArgumentParser(prog = '20221212')
     apaser.add_argument('filename')
     args = apaser.parse_args()
@@ -24,9 +24,17 @@ def main():
     # code2 = f"co[($x:({code1}).(*))]"
     # code3 = f"co[($x:({code2}).({code2}))]"
     # code = code2
-    term = parse_term(code)
-    print("succeed")
-    pp.pprint(term)
+    try:
+        term = parse_term(code)
+        print("succeed")
+        pp.pprint(term)
+    except (SyntaxError) as e:
+        print('fail')
+        print(e)
+
+
+class SyntaxError(Exception):
+    pass
 
 # 項を構文解析する。失敗したら例外を投げる
 def parse_term(code):
@@ -46,7 +54,7 @@ def parse_term(code):
         var = code[1]
         code1, end = find_first_term(code)
         if not code[end] == ".":
-            raise "error"
+            raise SyntaxError(f"parsing lambda in {code}\nexpect: '.', found: {code[end]}\n")
         code2, _ = find_first_term(code[end:])
         t1 = parse_term(code1)
         t2 = parse_term(code2)
@@ -55,7 +63,7 @@ def parse_term(code):
         var = code[1]
         code1, end = find_first_term(code)
         if not code[end] == ".":
-            raise "error"
+            raise SyntaxError(f"parsing type in {code}\nexpect: '.', found: {code[end]}\n")
         code2, _ = find_first_term(code[end:])
         return {
             "tag": "type",
@@ -118,4 +126,5 @@ def is_const(code):
     op_name = code.split("[")[0]
     return op_name_re.match(op_name)
 
-main()
+if __name__ == "__main__":
+    run()

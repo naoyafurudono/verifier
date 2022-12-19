@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# ./20221212 filename
+
+filename=$1
+python3 20221212.py $filename
+

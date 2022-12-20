@@ -17,3 +17,5 @@ https://www.kurims.kyoto-u.ac.jp/~tshun/2022q4t.html
 ./20221215 in-alpha
 ```
 
+python3.11が必要
+

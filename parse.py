@@ -37,7 +37,10 @@ def parse_term(code):
         code2, _ = find_first_term(code[end:])
         t1 = parse_term(code1)
         t2 = parse_term(code2)
-        return {"tag": "app", "children": [t1, t2]}
+        return {
+            "tag": "app",
+            "children": [t1, t2]
+        }
     if is_lambda(code):
         var = code[1]
         code1, end = find_first_term(code)
@@ -46,7 +49,11 @@ def parse_term(code):
         code2, _ = find_first_term(code[end:])
         t1 = parse_term(code1)
         t2 = parse_term(code2)
-        return {"tag": "lambda", "children": [t1, t2], "var": var}
+        return {
+            "tag": "lambda",
+            "children": [t1, t2],
+            "var": var
+        }
     if is_type(code):
         var = code[1]
         code1, end = find_first_term(code)
@@ -75,7 +82,11 @@ def parse_term(code):
             code_list.append(code1)
             fresh_code = fresh_code[next_start:]
         term_list = list(map(lambda code: parse_term(code), code_list))
-        return {"tag": "const", "children": term_list, "op": op_name}
+        return {
+            "tag": "const",
+            "children": term_list,
+            "op": op_name
+        }
 
 op_name_re = re.compile("([a-zA-Z0-9][a-zA-Z0-9_]+)\[")
 def get_op_name(code):

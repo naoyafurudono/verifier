@@ -1,7 +1,6 @@
 # python3.10以上が必要。match-caseを使っている(switch相当の使い方)
 
 from parse import parse_term
-from fresh_name import Fresh
 import argparse
 
 def run():

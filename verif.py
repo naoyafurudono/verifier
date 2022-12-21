@@ -47,6 +47,7 @@ def show_prop(prop):
 
 
 def verif(inst, conseqs):
+    # INST * CONSEQ --> CONSEQ[]
     # DATATYPE: CONSEQ
     # 今回処理する命令（適用する推論規則とパラメータ）をすでに得られている
     # 結論のリストconseqsのもとで処理する。得られた結論をappendしたリストを返す。

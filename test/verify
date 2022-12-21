@@ -1,0 +1,11 @@
+0 sort
+1 var 0 A
+2 weak 0 0 A
+3 var 2 B
+4 weak 2 2 B
+5 weak 1 2 B
+6 var 5 a
+7 weak 4 5 a
+8 weak 3 5 a
+9 form 5 8
+-1

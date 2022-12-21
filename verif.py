@@ -31,7 +31,7 @@ def show_conseq(lnum, tree):
 
 
 def show_env(env):
-    return "todo"
+    return ", ".join(map(show_definition, env))
 
 
 def show_ctx(ctx):
@@ -162,8 +162,8 @@ def verif(inst, conseqs):
                 }
             }
         case "def":
-            premise1 = inst["pre1"]
-            premise2 = inst["pre2"]
+            premise1 = conseqs[inst["pre1"]]
+            premise2 = conseqs[inst["pre2"]]
             if premise1["environment"] != premise2["environment"]:
                 raise TypeError("env must match")
             # TODO check a \not\in \Gamma
@@ -206,6 +206,8 @@ def verif(inst, conseqs):
     res.append(conseq)
     return res
 
+def show_definition(df):
+    return f"{show_ctx(df['context'])} |> {df['op']} := {to_string(df['body'])} : {to_string(df['prop'])}"
 
 def to_definition(name, conseq):
     # DATATYPE: definition, D

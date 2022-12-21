@@ -222,6 +222,8 @@ class FormatError(Exception):
 
 
 def scan_inst(inst_code: str):
+    # TODO dictリテラルを毎回書く。データ構造を一目で理解できないので
+    # そもそもクラスで表現するかTypeScriptに乗り換えるのが素直かもしれない
     # DATATYPE: INST
     # https://www.kurims.kyoto-u.ac.jp/~tshun/ex20221208A
     # 上の例の一行が入力のinst_codeに対応する。

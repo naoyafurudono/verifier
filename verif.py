@@ -2,6 +2,7 @@
 
 # deriv_treesが既存の導出木の列だとしたとき、
 # instで構成される新しい導出木をderiv_treeにappendした列を返す
+from alpha-eqv import alpha_eqv
 from parse import parse_term
 from subst import subst, subst_in_one_sweep
 from to_string import to_string
@@ -196,7 +197,21 @@ def verif(inst, conseqs):
                 },
                 "prop": subst_in_one_sweep(definition["prop"], env)
             }
-            pass
+        case "conv":
+            premise1 = inst["pre1"]
+            premise2 = inst["pre2"]
+            if not (premise1["environment"] == premise2["environment"] and
+                    premise1["context"] == premise2["context"]):
+                raise TypeError("env and context must match")
+            if not beta_eqv(premise1["prop"],  premise1["environment"], premise1["context"],
+                            premise2["proof"], premise2["environment"], premise2["context"]):
+                raise TypeError("non-beta equivalent term cannot be converted")
+            conseq = {
+                "environment": premise1["environment"],
+                "context": premise1["context"],
+                "proof": premise1["proof"],
+                "prop": premise2["proof"]
+            }
         case x if x in ["conv", "def-prim", "inst-prim"]:
             print(f"not implemented yet: {x}")
             exit(1)
@@ -205,6 +220,34 @@ def verif(inst, conseqs):
     res = conseqs.copy()
     res.append(conseq)
     return res
+
+def beta_eqv(t1, env1, ctx1, t2, env2, ctx2):
+    # TODO beta等価かを判定する
+    nf1 = normalize(t1, env1, ctx1)
+    nf2 = normalize(t2, env2, ctx2)
+    return alpha_eqv(nf1, nf2)
+
+def normalize(t, env, ctx):
+    # TODO beta-正規形に変換する
+
+    match t["tag"]:
+        case x if x in ["var", "star", "sort"]:
+            return t
+        case "app":
+            t0 = t["child"][0]
+            t1 = t["child"][1]
+            nt0 = normalize(t0, env, ctx)
+            nt1 = normalize(t1, env, ctx)
+            if nt0["tag"] in  ["lambda", "type"]:
+                # 簡約して結果を正規化する
+                pass
+                return normalize() # 簡約した何か
+            return {
+                "tag": "app",
+                "children": [nt0, nt1]
+            }
+
+
 
 def show_definition(df):
     return f"{show_ctx(df['context'])} |> {df['op']} := {to_string(df['body'])} : {to_string(df['prop'])}"
@@ -277,6 +320,10 @@ def scan_inst(inst_code: str):
             length = int(tokens[3])
             res["pres"] = list(map(int, tokens[4:4+length]))
             res["const-name"] = int(tokens[-1])
+        case "conv":
+            # lnum "conv" m n
+            res["pre1"] = int(tokens[2])
+            res["pre2"] = int(tokens[3])
     return res
 
 

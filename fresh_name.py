@@ -7,4 +7,4 @@ class Fresh:
     def fresh():
         num = Fresh.__gen
         Fresh.__gen += 1
-        return f"#{num}"
+        return f"^{num}"

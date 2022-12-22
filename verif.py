@@ -2,7 +2,7 @@
 
 # deriv_treesが既存の導出木の列だとしたとき、
 # instで構成される新しい導出木をderiv_treeにappendした列を返す
-from alpha-eqv import alpha_eqv
+from alpha_eqv import alpha_eqv
 from parse import parse_term
 from subst import subst, subst_in_one_sweep
 from to_string import to_string
@@ -107,7 +107,6 @@ def verif(inst, conseqs):
                     "var": to_string(premise2["context"][-1][0])
                 },
                 "prop": premise2["prop"],
-
             }
         case "appl":
             premise1 = conseqs[inst["pre1"]]
@@ -229,16 +228,15 @@ def beta_eqv(t1, env1, ctx1, t2, env2, ctx2):
 
 def normalize(t, env, ctx):
     # TODO beta-正規形に変換する
-
     match t["tag"]:
         case x if x in ["var", "star", "sort"]:
             return t
         case "app":
-            t0 = t["child"][0]
-            t1 = t["child"][1]
+            t0 = t["children"][0]
+            t1 = t["children"][1]
             nt0 = normalize(t0, env, ctx)
             nt1 = normalize(t1, env, ctx)
-            if nt0["tag"] in  ["lambda", "type"]:
+            if nt0["tag"] in  ["lambda"]:
                 # 簡約して結果を正規化する
                 pass
                 return normalize() # 簡約した何か
@@ -246,6 +244,23 @@ def normalize(t, env, ctx):
                 "tag": "app",
                 "children": [nt0, nt1]
             }
+        case tag if tag in ["lambda", "type"]:
+            t0 = t["children"][0]
+            t1 = t["children"][1]
+            nt0 = normalize(t0, env, ctx)
+            # TODO 変数名の付け替えが必要？
+            nt1 = normalize(t1, env, ctx)
+            return {
+                "tag": tag,
+                "children": [nt0, nt1],
+                "var": t["var"]
+            }
+        case "const":
+            nts = list(map(lambda t: normalize(t, env, ctx), t["children"]))
+            df = env[list(map(lambda df: df["op"], env)).index(t["op"])]
+            body = df["body"]
+            return normalize(subst_in_one_sweep(body, zip(map(lambda pair: pair[0],  df["context"]), nts)), env, ctx)
+
 
 
 

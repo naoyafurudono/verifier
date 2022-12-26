@@ -128,7 +128,8 @@ def subst_in_one_sweep(t, env):
                 return t
         case x if x in ["lambda", "type"]:
             env2 = env.copy()
-            del env2[t["var"]]
+            if t["var"] in env2:
+                del env2[t["var"]]
             fresh_name = Fresh.fresh()
             return {
                 "tag": t["tag"],

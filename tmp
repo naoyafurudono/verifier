@@ -1,0 +1,46 @@
+0 sort
+1 cp 0
+2 var 1 A
+3 weak 1 1 A
+4 weak 0 1 A
+5 cp 4
+6 var 5 B
+7 weak 5 5 B
+8 weak 4 5 B
+9 sp 8 0
+10 var 9 a
+11 weak 8 9 a
+12 sp 11 1
+13 form 9 12
+14 cp 8
+15 cp 14
+16 conv 13 15
+17 def 0 16 implies
+18 cp 17
+19 var 18 A
+20 weak 18 18 A
+21 weak 17 18 A
+22 cp 21
+23 var 22 B
+24 weak 22 22 B
+25 weak 21 22 B
+26 sp 25 0
+27 var 26 a
+28 weak 25 26 a
+29 sp 28 1
+30 form 26 29
+31 var 30 u
+32 weak 30 30 u
+33 weak 25 30 u
+34 sp 33 2
+35 cp 33
+36 sp 35 0
+37 sp 35 1
+38 cp 35
+39 cp 35
+40 conv 36 38
+41 conv 37 39
+42 inst 35 2 40 41 0
+43 conv 34 42
+44 def 17 43 implies_in
+-1

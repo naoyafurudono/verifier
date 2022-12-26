@@ -2,6 +2,8 @@
 
 # deriv_treesが既存の導出木の列だとしたとき、
 # instで構成される新しい導出木をderiv_treeにappendした列を返す
+import pprint
+
 from alpha_eqv import alpha_eqv
 from parse import parse_term
 from subst import subst, subst_in_one_sweep
@@ -52,6 +54,7 @@ def verif(inst, conseqs):
     # DATATYPE: CONSEQ
     # 今回処理する命令（適用する推論規則とパラメータ）をすでに得られている
     # 結論のリストconseqsのもとで処理する。得られた結論をappendしたリストを返す。
+    print(inst["lnum"])
     match inst["tag"]:
         case "sort":
             conseq = {
@@ -132,13 +135,13 @@ def verif(inst, conseqs):
         case "abst":
             premise1 = conseqs[inst["pre1"]]
             premise2 = conseqs[inst["pre2"]]
-            if premise2["prop"]["tag"] != "type":
+            if premise2["proof"]["tag"] != "type":
                 raise TypeError(
-                    f"error at {inst['lnum']}: the proposition of second premise of (abst) must be Pai.\nfound: {premise1['prop']}")
-            var_name = premise2["var"]
+                    f"error at {inst['lnum']}: the proposition of second premise of (abst) must be Pai.\nfound: {premise2['prop']}in\n{pprint.pformat( premise2)}")
+            var_name = premise2["proof"]["var"]
             param_type = premise2["proof"]["children"][0]
             last_binding = premise1["context"][-1]
-            if not (last_binding[0] == var_name and last_binding[1] == param_type):
+            if not (last_binding[0] == parse_term(var_name) and last_binding[1] == param_type):
                 raise TypeError(
                     f"invalid extension of the context of the first premise")
             if premise1["prop"] != premise2["proof"]["children"][1]:
@@ -172,20 +175,20 @@ def verif(inst, conseqs):
             conseq = premise1.copy()
             conseq["environment"] = env
         case "inst":
-            premise = inst["pre"]
-            if not (premise["proof"] == parse_term("*") and premise["proof"] == parse_term("@")):
+            premise = conseqs[inst["pre"]]
+            if not (premise["proof"] == parse_term("*") and premise["prop"] == parse_term("@")):
                 raise TypeError("inst first premise is not good")
-            premises = inst["pres"]
-            if not all(map(lambda p: premise["environment"] == p["environment"] and premise["context"] == p["context"], premises)):
+            premises = list(map(lambda i: conseqs[i], inst["pres"]))
+            if not all(map(lambda p: premise["environment"] == p["environment"] and premise["context"] == p["context"],
+                           premises)):
                 raise TypeError("env and ctx must agree")
             # TODO 引数の検査
             defs = premise["environment"]
-            definition = defs[list(map(lambda df: df["op"]), defs).index(
-                inst["const-name"])]
+            definition = defs[inst["const-name"]]
             params = list(
                 map(lambda binding: binding[0], definition["context"]))
             args = list(map(lambda p: p["proof"], premises))
-            env = zip(params, args)
+            env = dict(zip(map(to_string, params), args))
             conseq = {
                 "environment": premise["environment"],
                 "context": premise["context"],
@@ -197,8 +200,8 @@ def verif(inst, conseqs):
                 "prop": subst_in_one_sweep(definition["prop"], env)
             }
         case "conv":
-            premise1 = inst["pre1"]
-            premise2 = inst["pre2"]
+            premise1 = conseqs[inst["pre1"]]
+            premise2 = conseqs[inst["pre2"]]
             if not (premise1["environment"] == premise2["environment"] and
                     premise1["context"] == premise2["context"]):
                 raise TypeError("env and context must match")
@@ -211,12 +214,32 @@ def verif(inst, conseqs):
                 "proof": premise1["proof"],
                 "prop": premise2["proof"]
             }
+        case "cp":
+            conseq = conseqs[inst["target"]]
+            print(f"cp:\n{conseq}")
+        case "sp":
+            target = conseqs[inst["target"]]
+            binding = target["context"][inst["bind"]]
+            x = binding[0]
+            t = binding[1]
+            conseq = {
+                "environment": target["environment"],
+                "context": target["context"],
+                "proof": x,
+                "prop": t
+            }
         case x if x in ["conv", "def-prim", "inst-prim"]:
             print(f"not implemented yet: {x}")
             exit(1)
         case "end":
             return conseqs
+        case _:
+            print(inst)
+            raise FormatError("not defined yet")
     res = conseqs.copy()
+    if not all(map(lambda d: is_definition(d), conseq["environment"])):
+        print(conseq["environment"])
+        raise "ouch"
     res.append(conseq)
     return res
 
@@ -224,6 +247,8 @@ def beta_eqv(t1, env1, ctx1, t2, env2, ctx2):
     # TODO beta等価かを判定する
     nf1 = normalize(t1, env1, ctx1)
     nf2 = normalize(t2, env2, ctx2)
+    print("goo")
+    pprint.pprint(t2)
     return alpha_eqv(nf1, nf2)
 
 def normalize(t, env, ctx):
@@ -259,7 +284,8 @@ def normalize(t, env, ctx):
             nts = list(map(lambda t: normalize(t, env, ctx), t["children"]))
             df = env[list(map(lambda df: df["op"], env)).index(t["op"])]
             body = df["body"]
-            return normalize(subst_in_one_sweep(body, zip(map(lambda pair: pair[0],  df["context"]), nts)), env, ctx)
+            print(f"body: {body}")
+            return normalize(subst_in_one_sweep(body, dict(zip(map(lambda pair: to_string(pair[0]),  df["context"]), nts))), env, ctx)
 
 
 
@@ -276,6 +302,26 @@ def to_definition(name, conseq):
         "prop": conseq["prop"]
     }
 
+def is_definition(x):
+    if not type(x) is dict:
+        return False
+    if not ("op" in x and "context" in x and "body" in x and "prop" in x):
+        return False
+    if not type(x["op"]) is str:
+        return False
+    if not is_context(x["context"]):
+        return False
+    if not is_term(x["body"]):
+        return False
+    if not is_term(x["prop"]):
+        return False
+    return True
+
+def is_context(x):
+    if not type(x) is list:
+        print("bad ctx")
+        return False
+    return all(map(lambda binding: len(binding) == 2 and is_term(binding[0]) and is_term(binding[1]), x))
 
 class FormatError(Exception):
     pass
@@ -335,12 +381,38 @@ def scan_inst(inst_code: str):
             length = int(tokens[3])
             res["pres"] = list(map(int, tokens[4:4+length]))
             res["const-name"] = int(tokens[-1])
+            print(tokens)
         case "conv":
             # lnum "conv" m n
             res["pre1"] = int(tokens[2])
             res["pre2"] = int(tokens[3])
+        case "cp":
+            res["target"] = int(tokens[2])
+        case "sp":
+            res["target"] = int(tokens[2])
+            res["bind"] = int(tokens[3])
+        case _:
+            raise FormatError(f"not defined yet {tokens[1]}")
     return res
 
+def is_inst(inst_like):
+    if not type(inst_like) is dict:
+        return False
+    if not "tag" in inst_like:
+        return False
+    match inst_like["tag"]:
+        case x if x in ["sort", "star"]:
+            return True
+        case "var":
+            return ("pre" in inst_like and "var" in inst_like and
+                    inst_like["pre"] is int and is_term(inst_like["var"]))
+
+    print("TODO verify.py: is_inst")
+    return True
+
+def is_term(term):
+    print("TODO verify.py is_term")
+    return True
 
 if __name__ == "__main__":
     run()

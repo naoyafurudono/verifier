@@ -76,6 +76,9 @@ class ConstTerm(Term):
 class SyntaxError(Exception):
     pass
 
+class UnExpectedTermError(Exception):
+    pass
+
 
 def parse_term(code: str) -> Term:
     # 失敗したらSyntaxErrorを投げる

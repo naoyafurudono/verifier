@@ -59,6 +59,13 @@ class DefInst(Instruction):
 
 
 @dataclass(frozen=True)
+class DefPrInst(Instruction):
+    pre1: int
+    pre2: int
+    op: str
+
+
+@dataclass(frozen=True)
 class InstInst(Instruction):
     # instantiation instruction
     pre: int
@@ -126,6 +133,9 @@ def scan_inst(inst_code: str) -> Instruction:
                 tokens[2]), pre2=int(tokens[3]))
         case "def":
             return DefInst(lnum=lnum, pre1=int(
+                tokens[2]), pre2=int(tokens[3]), op=tokens[4])
+        case "defpr":
+            return DefPrInst(lnum=lnum, pre1=int(
                 tokens[2]), pre2=int(tokens[3]), op=tokens[4])
         case "inst":
             return InstInst(lnum=lnum, pre=int(

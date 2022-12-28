@@ -1,4 +1,4 @@
-from parse import AppTerm, ConstTerm, LambdaTerm, PiTerm, SortTerm, StarTerm, Term, VarTerm, parse_term
+from parse import parse_term
 import argparse
 from parse import alpha_eqv
 

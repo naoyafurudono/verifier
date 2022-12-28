@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from typing import Tuple
-from inst import AbstInst, ApplInst, CPInst, ConvInst, DefInst, EndInst, FormInst, InstInst, Instruction, SPInst, SortInst, VarInst, WeakInst, scan_inst
+from inst import AbstInst, ApplInst, CPInst, ConvInst, DefInst, DefPrInst, EndInst, FormInst, InstInst, Instruction, SPInst, SortInst, VarInst, WeakInst, scan_inst
 from normalize import bd_eqv
 
 from parse import AppTerm, ConstTerm, LambdaTerm, PiTerm, SortTerm, StarTerm, Term, parse_term
@@ -214,7 +214,6 @@ def verify(inst: Instruction, book: list[Judgement]) -> list[Judgement]:
         ))
         return _book
     elif isinstance(inst, DefInst):
-        # TODO def-primを区別して処理する
         premise1 = book[inst.pre1]
         premise2 = book[inst.pre2]
         op = inst.op
@@ -233,6 +232,28 @@ def verify(inst: Instruction, book: list[Judgement]) -> list[Judgement]:
             context=premise1.context,
             proof=premise1.proof,
             prop=premise1.prop
+        ))
+        return _book
+    elif isinstance(inst, DefPrInst):
+        premise1 = book[inst.pre1]
+        premise2 = book[inst.pre2]
+        op = inst.op
+        if premise1.environment != premise2.environment:
+            raise fmtErr_(inst, "environments are not agree")
+        if op in map(lambda d: d.op, premise1.environment):
+            raise fmtErr_(
+                inst, f"constant {op} is already defined in the environment")
+        dfn = Definition(op=op, context=premise2.context,
+                         body=StarTerm(),  # Dummy
+                         prop=premise2.prop, is_prim=True)
+        _env = premise1.environment.copy()
+        _env.append(dfn)
+        _book = book.copy()
+        _book.append(Judgement(
+            environment=_env,
+            context=premise1.context,
+            proof=premise1.proof,
+            prop=premise1.prop,
         ))
         return _book
     elif isinstance(inst, InstInst):

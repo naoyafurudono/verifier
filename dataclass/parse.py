@@ -16,6 +16,8 @@ class Term:
 @dataclass
 class VarTerm(Term):
     name: str
+    def __str__(self) -> str:
+        return self.name
 
 
 @dataclass

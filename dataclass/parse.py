@@ -6,9 +6,14 @@ import re
 import argparse
 from dataclasses import dataclass
 
+from alpha_eqv import alpha_eqv
+
 
 @dataclass
 class Term:
+    def __eq__(self, that):
+        return alpha_eqv(self, that)
+
     def __str__(self) -> str:
         return f"TODO {self.__class__.__name__}"
 
@@ -16,6 +21,7 @@ class Term:
 @dataclass
 class VarTerm(Term):
     name: str
+
     def __str__(self) -> str:
         return self.name
 
@@ -75,6 +81,7 @@ class ConstTerm(Term):
 
 class SyntaxError(Exception):
     pass
+
 
 class UnExpectedTermError(Exception):
     pass

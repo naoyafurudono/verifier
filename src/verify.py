@@ -251,7 +251,7 @@ def verify(inst: Instruction, book: list[Judgement]) -> list[Judgement]:
                 inst, f"constant {op} is already defined in the environment")
         dfn = Definition(op=op, context=premise2.context,
                          body=StarTerm(),  # Dummy
-                         prop=premise2.prop, is_prim=True)
+                         prop=premise2.proof, is_prim=True)
         _env = premise1.environment.copy()
         _env.append(dfn)
         _book = book.copy()

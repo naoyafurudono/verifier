@@ -2,10 +2,37 @@ from functools import reduce
 from dataclasses import dataclass
 from typing import Tuple
 
-from parse import AppTerm, ConstTerm, LambdaTerm, PiTerm, SortTerm, StarTerm, Term, VarTerm, alpha_eqv, parse_term
+from parse import (
+    AppTerm,
+    ConstTerm,
+    LambdaTerm,
+    PiTerm,
+    SortTerm,
+    StarTerm,
+    Term,
+    VarTerm,
+    alpha_eqv,
+    parse_term,
+)
 from fresh_name import Fresh
 from subst import rename, subst
-from inst import AbstInst, ApplInst, CPInst, ConvInst, DefInst, DefPrInst, EndInst, FormInst, InstInst, Instruction, SPInst, SortInst, VarInst, WeakInst, scan_inst
+from inst import (
+    AbstInst,
+    ApplInst,
+    CPInst,
+    ConvInst,
+    DefInst,
+    DefPrInst,
+    EndInst,
+    FormInst,
+    InstInst,
+    Instruction,
+    SPInst,
+    SortInst,
+    VarInst,
+    WeakInst,
+    scan_inst,
+)
 
 
 @dataclass(frozen=True)
@@ -23,13 +50,21 @@ class Context:
         if len(self.container) != len(that.container):
             return False
 
-        def fst(b): return b[0]
+        def fst(b):
+            return b[0]
+
         if list(map(fst, self.container)) != list(map(fst, that.container)):
             return False
 
-        def snd(b): return b[1]
-        if any(map(lambda p: p[0] != p[1],
-                   zip(map(snd, self.container),  map(snd, that.container)))):
+        def snd(b):
+            return b[1]
+
+        if any(
+            map(
+                lambda p: p[0] != p[1],
+                zip(map(snd, self.container), map(snd, that.container)),
+            )
+        ):
             return False
         return True
 
@@ -40,10 +75,14 @@ class Context:
         return self.container[-1]
 
     def __str__(self) -> str:
-        return ", ".join(map(lambda binding: f"{binding[0]}:{binding[1]}", self.container))
+        return ", ".join(
+            map(lambda binding: f"{binding[0]}:{binding[1]}", self.container)
+        )
 
     def params(self) -> list[str]:
-        def fst(d): return d[0]
+        def fst(d):
+            return d[0]
+
         return list(map(fst, self.container))
 
 
@@ -58,12 +97,14 @@ class Definition:
     def __eq__(self, that):
         if self is that:
             return True
-        return isinstance(that, Definition) and all([
-            self.op == that.op,
-            self.context == that.context,
-            self.body == that.body,
-            self.prop == that.prop
-        ])
+        return isinstance(that, Definition) and all(
+            [
+                self.op == that.op,
+                self.context == that.context,
+                self.body == that.body,
+                self.prop == that.prop,
+            ]
+        )
 
     def __str__(self) -> str:
         return self.op
@@ -98,23 +139,27 @@ def fmtErr_(inst: Instruction, msg: str) -> VerificationError:
 def verify(inst: Instruction, book: list[Judgement]) -> list[Judgement]:
     if isinstance(inst, SortInst):
         _book = book.copy()
-        _book.append(Judgement(
-            environment=[],
-            context=Context([]),
-            proof=parse_term("*"),
-            prop=parse_term("@")
-        ))
+        _book.append(
+            Judgement(
+                environment=[],
+                context=Context([]),
+                proof=parse_term("*"),
+                prop=parse_term("@"),
+            )
+        )
         return _book
     elif isinstance(inst, VarInst):
         premise = book[inst.pre]
         var_name: str = inst.var.name
         _book = book.copy()
-        _book.append(Judgement(
-            environment=premise.environment,
-            context=premise.context.extend(var_name, premise.proof),
-            proof=inst.var,
-            prop=premise.proof
-        ))
+        _book.append(
+            Judgement(
+                environment=premise.environment,
+                context=premise.context.extend(var_name, premise.proof),
+                proof=inst.var,
+                prop=premise.proof,
+            )
+        )
         return _book
     elif isinstance(inst, WeakInst):
         premise1 = book[inst.pre1]
@@ -125,15 +170,16 @@ def verify(inst: Instruction, book: list[Judgement]) -> list[Judgement]:
         if premise1.context != premise2.context:
             raise fmtErr_(inst, "contexts are not agree")
         if new_name in premise1.context.container:
-            raise fmtErr_(
-                inst, f"variable {new_name} is already used in the context")
+            raise fmtErr_(inst, f"variable {new_name} is already used in the context")
         _book = book.copy()
-        _book.append(Judgement(
-            environment=premise1.environment,
-            context=premise1.context.extend(new_name, premise2.proof),
-            proof=premise1.proof,
-            prop=premise1.prop
-        ))
+        _book.append(
+            Judgement(
+                environment=premise1.environment,
+                context=premise1.context.extend(new_name, premise2.proof),
+                proof=premise1.proof,
+                prop=premise1.prop,
+            )
+        )
         return _book
     elif isinstance(inst, FormInst):
         premise1 = book[inst.pre1]
@@ -144,15 +190,17 @@ def verify(inst: Instruction, book: list[Judgement]) -> list[Judgement]:
             raise fmtErr_(inst, "contexts are not agree")
         if premise1.proof != premise2.context.car()[1]:
             raise fmtErr_(
-                inst, "proof of pre1 does not agree with last type of the pre2 context")
+                inst, "proof of pre1 does not agree with last type of the pre2 context"
+            )
         _book = book.copy()
-        _book.append(Judgement(
-            environment=premise1.environment,
-            context=premise1.context,
-            proof=PiTerm(premise1.proof, premise2.proof,
-                         premise2.context.car()[0]),
-            prop=premise2.prop
-        ))
+        _book.append(
+            Judgement(
+                environment=premise1.environment,
+                context=premise1.context,
+                proof=PiTerm(premise1.proof, premise2.proof, premise2.context.car()[0]),
+                prop=premise2.prop,
+            )
+        )
         return _book
     elif isinstance(inst, ApplInst):
         premise1 = book[inst.pre1]
@@ -166,15 +214,16 @@ def verify(inst: Instruction, book: list[Judgement]) -> list[Judgement]:
             raise fmtErr_(inst, "pre1 must prove Pi type")
         else:
             if not mb_funtype.t1 == premise2.prop:
-                raise fmtErr_(
-                    inst, "pre1 parameter type does not agree with pre2 type")
+                raise fmtErr_(inst, "pre1 parameter type does not agree with pre2 type")
             _book = book.copy()
-            _book.append(Judgement(
-                environment=premise1.environment,
-                context=premise1.context,
-                proof=AppTerm(premise1.proof, premise2.proof),
-                prop=subst(mb_funtype.t2, premise2.proof, mb_funtype.name)
-            ))
+            _book.append(
+                Judgement(
+                    environment=premise1.environment,
+                    context=premise1.context,
+                    proof=AppTerm(premise1.proof, premise2.proof),
+                    prop=subst(mb_funtype.t2, premise2.proof, mb_funtype.name),
+                )
+            )
             return _book
     elif isinstance(inst, AbstInst):
         premise1 = book[inst.pre1]
@@ -187,19 +236,22 @@ def verify(inst: Instruction, book: list[Judgement]) -> list[Judgement]:
         if not isinstance(mb_pi_term, PiTerm):
             raise fmtErr_(inst, "pre2 must prove Pi term")
         else:
-            if premise1.context.car()[0] != mb_pi_term.name or premise1.context.car()[1] != mb_pi_term.t1:
-                raise fmtErr_(
-                    inst, "pre1.context must end with binding of pre2.proof")
+            if (
+                premise1.context.car()[0] != mb_pi_term.name
+                or premise1.context.car()[1] != mb_pi_term.t1
+            ):
+                raise fmtErr_(inst, "pre1.context must end with binding of pre2.proof")
             if premise1.prop != mb_pi_term.t2:
                 raise fmtErr_(inst, "pre1 must prove pre2.proof's conclusion")
             _book = book.copy()
-            _book.append(Judgement(
-                environment=premise2.environment,
-                context=premise2.context,
-                proof=LambdaTerm(
-                    mb_pi_term.t1, premise1.proof, mb_pi_term.name),
-                prop=premise2.proof
-            ))
+            _book.append(
+                Judgement(
+                    environment=premise2.environment,
+                    context=premise2.context,
+                    proof=LambdaTerm(mb_pi_term.t1, premise1.proof, mb_pi_term.name),
+                    prop=premise2.proof,
+                )
+            )
             return _book
     elif isinstance(inst, ConvInst):
         premise1 = book[inst.pre1]
@@ -210,14 +262,18 @@ def verify(inst: Instruction, book: list[Judgement]) -> list[Judgement]:
             raise fmtErr_(inst, "contexts are not agree")
         if not bd_eqv(premise1.prop, premise2.proof, premise1.environment):
             raise fmtErr_(
-                inst, f"pre2.proof must be beta-delta eqv to pre1 prop\n{premise1.prop} vs. {premise2.proof}")
+                inst,
+                f"pre2.proof must be beta-delta eqv to pre1 prop\n{premise1.prop} vs. {premise2.proof}",
+            )
         _book = book.copy()
-        _book.append(Judgement(
-            environment=premise1.environment,
-            context=premise1.context,
-            proof=premise1.proof,
-            prop=premise2.proof
-        ))
+        _book.append(
+            Judgement(
+                environment=premise1.environment,
+                context=premise1.context,
+                proof=premise1.proof,
+                prop=premise2.proof,
+            )
+        )
         return _book
     elif isinstance(inst, DefInst):
         premise1 = book[inst.pre1]
@@ -226,19 +282,21 @@ def verify(inst: Instruction, book: list[Judgement]) -> list[Judgement]:
         if premise1.environment != premise2.environment:
             raise fmtErr_(inst, "environments are not agree")
         if op in map(lambda d: d.op, premise1.environment):
-            raise fmtErr_(
-                inst, f"constant {op} is already defined in the environment")
-        dfn = Definition(op=op, context=premise2.context,
-                         body=premise2.proof, prop=premise2.prop)
+            raise fmtErr_(inst, f"constant {op} is already defined in the environment")
+        dfn = Definition(
+            op=op, context=premise2.context, body=premise2.proof, prop=premise2.prop
+        )
         _env = premise1.environment.copy()
         _env.append(dfn)
         _book = book.copy()
-        _book.append(Judgement(
-            environment=_env,
-            context=premise1.context,
-            proof=premise1.proof,
-            prop=premise1.prop
-        ))
+        _book.append(
+            Judgement(
+                environment=_env,
+                context=premise1.context,
+                proof=premise1.proof,
+                prop=premise1.prop,
+            )
+        )
         return _book
     elif isinstance(inst, DefPrInst):
         premise1 = book[inst.pre1]
@@ -247,20 +305,25 @@ def verify(inst: Instruction, book: list[Judgement]) -> list[Judgement]:
         if premise1.environment != premise2.environment:
             raise fmtErr_(inst, "environments are not agree")
         if op in map(lambda d: d.op, premise1.environment):
-            raise fmtErr_(
-                inst, f"constant {op} is already defined in the environment")
-        dfn = Definition(op=op, context=premise2.context,
-                         body=StarTerm(),  # Dummy
-                         prop=premise2.proof, is_prim=True)
+            raise fmtErr_(inst, f"constant {op} is already defined in the environment")
+        dfn = Definition(
+            op=op,
+            context=premise2.context,
+            body=StarTerm(),  # Dummy
+            prop=premise2.proof,
+            is_prim=True,
+        )
         _env = premise1.environment.copy()
         _env.append(dfn)
         _book = book.copy()
-        _book.append(Judgement(
-            environment=_env,
-            context=premise1.context,
-            proof=premise1.proof,
-            prop=premise1.prop,
-        ))
+        _book.append(
+            Judgement(
+                environment=_env,
+                context=premise1.context,
+                proof=premise1.proof,
+                prop=premise1.prop,
+            )
+        )
         return _book
     elif isinstance(inst, InstInst):
         # instとinst-primを区別する必要はない
@@ -271,7 +334,7 @@ def verify(inst: Instruction, book: list[Judgement]) -> list[Judgement]:
         if any(map(lambda pre: premise.context != pre.context, premises)):
             raise fmtErr_(inst, "context are not agree")
         if premise.proof != StarTerm() or premise.prop != SortTerm():
-            raise fmtErr_(inst, "TODO")
+            raise fmtErr_(inst, "bad premise {premise}")
         dfn = premise.environment[inst.op_offset]
         if len(dfn.context.container) != len(premises):
             raise fmtErr_(inst, "arity mismatch")
@@ -279,12 +342,14 @@ def verify(inst: Instruction, book: list[Judgement]) -> list[Judgement]:
             raise fmtErr_(inst, "arg type mismatch")
         prop = dfn.prop  # TODO 代入
         _book = book.copy()
-        _book.append(Judgement(
-            environment=premise.environment,
-            context=premise.context,
-            proof=ConstTerm(dfn.op, list(map(lambda p: p.proof, premises))),
-            prop=prop
-        ))
+        _book.append(
+            Judgement(
+                environment=premise.environment,
+                context=premise.context,
+                proof=ConstTerm(dfn.op, list(map(lambda p: p.proof, premises))),
+                prop=prop,
+            )
+        )
         return _book
     elif isinstance(inst, CPInst):
         _book = book.copy()
@@ -294,12 +359,14 @@ def verify(inst: Instruction, book: list[Judgement]) -> list[Judgement]:
         j = book[inst.target]
         binding = j.context.container[inst.bind]
         _book = book.copy()
-        _book.append(Judgement(
-            environment=j.environment,
-            context=j.context,
-            proof=parse_term(binding[0]),
-            prop=binding[1]
-        ))
+        _book.append(
+            Judgement(
+                environment=j.environment,
+                context=j.context,
+                proof=parse_term(binding[0]),
+                prop=binding[1],
+            )
+        )
         return _book
     elif isinstance(inst, EndInst):
         return book
@@ -382,19 +449,31 @@ def beta_reduction(f: LambdaTerm, t: Term) -> Term:
 def delta_reduction(dfn: Definition, args: list[Term]) -> Term:
     if dfn.is_prim:
         raise NormalizationError("cannot reduce")
-    return reduce(lambda body, sbst: subst(body, sbst[1], sbst[0]), zip(dfn.context.params(), args), dfn.body)
+    return reduce(
+        lambda body, sbst: subst(body, sbst[1], sbst[0]),
+        zip(dfn.context.params(), args),
+        dfn.body,
+    )
 
 
 if __name__ == "__main__":
     import argparse
-    apaser = argparse.ArgumentParser(prog='verify')
-    apaser.add_argument('filename')
+
+    apaser = argparse.ArgumentParser(prog="verify")
+    apaser.add_argument("filename")
     args = apaser.parse_args()
     filename = args.filename
-    with open(filename, 'r') as f:
-        book: list[Judgement] = []
-        for line in f.readlines():
-            inst = scan_inst(line.replace("\n", ""))
-            book = verify(inst, book)
+
+    def run():
+        with open(filename, "r") as f:
+            book: list[Judgement] = []
+            for line in f.readlines():
+                inst = scan_inst(line.replace("\n", ""))
+                book = verify(inst, book)
+            return book
+    # 今はまだ一瞬で終わる
+    # import bench
+    # print(f"{bench.repeat_sec(run, 10)} sec")
+    book = run()
     for i, judgement in enumerate(book):
         print(i, judgement.__str__())

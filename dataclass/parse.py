@@ -12,9 +12,6 @@ class Term:
     def __eq__(self, that):
         return alpha_eqv(self, that)
 
-    def __str__(self) -> str:
-        return f"TODO {self.__class__.__name__}"
-
 
 @dataclass(frozen=True)
 class VarTerm(Term):

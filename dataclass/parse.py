@@ -130,7 +130,7 @@ def parse_term(code: str) -> Term:
     raise SyntaxError(f"マッチする式がない: {code}")
 
 
-op_name_re = re.compile("([a-zA-Z0-9][a-zA-Z0-9_]+)\[")
+op_name_re = re.compile("([a-zA-Z0-9][a-zA-Z0-9_]+)\\[")
 
 
 def get_op_name(code: str):

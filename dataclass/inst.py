@@ -4,61 +4,61 @@ from typing import Tuple
 from parse import Term, VarTerm, parse_term
 
 
-@dataclass
+@dataclass(frozen=True)
 class Instruction:
     lnum: int
     pass
 
 
-@dataclass
+@dataclass(frozen=True)
 class EndInst(Instruction):
     pass
 
 
-@dataclass
+@dataclass(frozen=True)
 class SortInst(Instruction):
     pass
 
 
-@dataclass
+@dataclass(frozen=True)
 class VarInst(Instruction):
     pre: int
     var: VarTerm
 
 
-@dataclass
+@dataclass(frozen=True)
 class WeakInst(Instruction):
     pre1: int
     pre2: int
     var: VarTerm
 
 
-@dataclass
+@dataclass(frozen=True)
 class FormInst(Instruction):
     pre1: int
     pre2: int
 
 
-@dataclass
+@dataclass(frozen=True)
 class ApplInst(Instruction):
     pre1: int
     pre2: int
 
 
-@dataclass
+@dataclass(frozen=True)
 class AbstInst(Instruction):
     pre1: int
     pre2: int
 
 
-@dataclass
+@dataclass(frozen=True)
 class DefInst(Instruction):
     pre1: int
     pre2: int
     op: str
 
 
-@dataclass
+@dataclass(frozen=True)
 class InstInst(Instruction):
     # instantiation instruction
     pre: int
@@ -67,18 +67,18 @@ class InstInst(Instruction):
     op_offset: int
 
 
-@dataclass
+@dataclass(frozen=True)
 class ConvInst(Instruction):
     pre1: int
     pre2: int
 
 
-@dataclass
+@dataclass(frozen=True)
 class CPInst(Instruction):
     target: int
 
 
-@dataclass
+@dataclass(frozen=True)
 class SPInst(Instruction):
     target: int
     bind: int

@@ -7,7 +7,7 @@ import argparse
 from dataclasses import dataclass
 
 
-@dataclass
+@dataclass(frozen=True)
 class Term:
     def __eq__(self, that):
         return alpha_eqv(self, that)
@@ -16,7 +16,7 @@ class Term:
         return f"TODO {self.__class__.__name__}"
 
 
-@dataclass
+@dataclass(frozen=True)
 class VarTerm(Term):
     name: str
 
@@ -24,19 +24,19 @@ class VarTerm(Term):
         return self.name
 
 
-@dataclass
+@dataclass(frozen=True)
 class StarTerm(Term):
     def __str__(self) -> str:
         return "*"
 
 
-@dataclass
+@dataclass(frozen=True)
 class SortTerm(Term):
     def __str__(self) -> str:
         return "@"
 
 
-@dataclass
+@dataclass(frozen=True)
 class AppTerm(Term):
     t1: Term
     t2: Term
@@ -47,7 +47,7 @@ class AppTerm(Term):
         return f"%({s1})({s2})"
 
 
-@dataclass
+@dataclass(frozen=True)
 class LambdaTerm(Term):
     t1: Term
     t2: Term
@@ -59,7 +59,7 @@ class LambdaTerm(Term):
         return f"${self.name}:({s1}).({s2})"
 
 
-@dataclass
+@dataclass(frozen=True)
 class PiTerm(Term):
     t1: Term
     t2: Term
@@ -71,7 +71,7 @@ class PiTerm(Term):
         return f"?{self.name}:({s1}).({s2})"
 
 
-@dataclass
+@dataclass(frozen=True)
 class ConstTerm(Term):
     op: str
     children: list[Term]

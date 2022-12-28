@@ -7,7 +7,7 @@ from parse import AppTerm, ConstTerm, LambdaTerm, PiTerm, SortTerm, StarTerm, Te
 from subst import subst
 
 
-@dataclass
+@dataclass(frozen=True)
 class Context:
     container: list[Tuple[str, Term]]
 
@@ -42,12 +42,13 @@ class Context:
         return ", ".join(map(lambda binding: f"{binding[0]}:{binding[1]}", self.container))
 
 
-@dataclass
+@dataclass(frozen=True)
 class Definition:
     op: str
     context: Context
     body: Term
     prop: Term
+    is_prim: bool = False
 
     def __eq__(self, that):
         if self is that:
@@ -60,10 +61,14 @@ class Definition:
         ])
 
     def __str__(self) -> str:
-        return f"{self.context} |> {self.op} := {self.body} : {self.prop}"
+        if self.is_prim:
+            body = "⊥"
+        else:
+            body = self.body.__str__()
+        return f"{self.context} |> {self.op} := {body} : {self.prop}"
 
 
-@dataclass
+@dataclass(frozen=True)
 class Judgement:
     environment: list[Definition]
     context: Context

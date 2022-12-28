@@ -1,166 +1,103 @@
 from dataclasses import dataclass
-from typing import Self
+from typing import Tuple
+from inst import Instruction, SortInst, VarInst, WeakInst, scan_inst
 
-from parse import VarTerm, parse_term
-
-
-@dataclass
-class Instruction:
-    lnum: int
-    pass
+from parse import Term, parse_term
 
 
 @dataclass
-class EndInst(Instruction):
-    pass
+class Context:
+    __container: list[Tuple[str, Term]]
+
+    def extend(self, var, t):
+        lst = self.__container.copy()
+        lst.append((var, t))
+        return Context(lst)
+
+    def __eq__(self, that):
+        if super().__eq__(that):
+            return True
+        if len(self.__container) != len(that.__container):
+            return False
+
+        def fst(b): return b[0]
+        if map(fst, self.__container) != map(fst, that.__container):
+            return False
+
+        def snd(b): return b[1]
+        if any(map(lambda p: p[0] != p[1],
+                   zip(map(snd, self.__container),  map(snd, that.__container)))):
+            return False
+        return True
 
 
 @dataclass
-class SortInst(Instruction):
-    pass
-
-
-@dataclass
-class VarInst(Instruction):
-    pre: int
-    var: VarTerm
-
-
-@dataclass
-class WeakInst(Instruction):
-    pre1: int
-    pre2: int
-    var: VarTerm
-
-
-@dataclass
-class FormInst(Instruction):
-    pre1: int
-    pre2: int
-
-
-@dataclass
-class ApplInst(Instruction):
-    pre1: int
-    pre2: int
-
-
-@dataclass
-class AbstInst(Instruction):
-    pre1: int
-    pre2: int
-
-
-@dataclass
-class DefInst(Instruction):
-    pre1: int
-    pre2: int
+class Definition:
     op: str
+    context: Context
+    body: Term
+    prop: Term
+
+    def __eq__(self, that):
+        if super().__eq__(that):
+            return True
+        return isinstance(that, Definition) and all([
+            self.op == that.op,
+            self.context == that.context,
+            self.body == that.body,
+            self.prop == that.prop
+        ])
 
 
-@dataclass
-class InstInst(Instruction):
-    # instantiation instruction
-    pre: int
-    length: int
-    pres: list[int]
-    op_offset: int
-
-
-@dataclass
-class ConvInst(Instruction):
-    pre1: int
-    pre2: int
-
-
-@dataclass
-class CPInst(Instruction):
-    target: int
-
-
-@dataclass
-class SPInst(Instruction):
-    target: int
-    bind: int
-
-
-@dataclass
+@ dataclass
 class Judgement:
-    pass
-
-
-class FormatError(Exception):
-    pass
-
-
-def __fmtErr(lnum: int, badcode: str = "", msg: str = "") -> FormatError:
-    return FormatError(f"at {lnum}: `{badcode}`\n{msg}")
-
-
-def scan_inst(inst_code: str) -> Instruction:
-    tokens = inst_code.split(" ")
-    if len(tokens) == 0:
-        raise FormatError("サイズ0の命令行")
-    lnum = int(tokens[0])
-    if lnum == -1:
-        return EndInst(lnum=lnum)
-    if len(tokens) == 1:
-        raise FormatError(f"無効な命令 {inst_code}")
-    tag = tokens[1]
-    match tag:
-        case "sort":
-            return SortInst(lnum=lnum)
-        case "var":
-            mb_var = parse_term(tokens[3])
-            if not isinstance(mb_var, VarTerm):
-                raise __fmtErr(lnum, inst_code, "not a variable")
-            else:
-                return VarInst(lnum=lnum, pre=int(tokens[2]), var=mb_var)
-        case "weak":
-            mb_var = parse_term(tokens[4])
-            if not isinstance(mb_var, VarTerm):
-                raise __fmtErr(lnum, inst_code, "not a variable")
-            else:
-                return WeakInst(lnum=lnum, pre1=int(
-                    tokens[2]), pre2=int(tokens[3]), var=mb_var)
-        case "form":
-            return FormInst(lnum=lnum, pre1=int(
-                tokens[2]), pre2=int(tokens[3]))
-        case "abst":
-            return AbstInst(lnum=lnum, pre1=int(
-                tokens[2]), pre2=int(tokens[3]))
-        case "def":
-            return DefInst(lnum=lnum, pre1=int(
-                tokens[2]), pre2=int(tokens[3]), op=tokens[4])
-        case "inst":
-            return InstInst(lnum=lnum, pre=int(
-                tokens[2]), length=int(tokens[3]), pres=list(map(int, tokens[4:-1])), op_offset=int(tokens[-1]))
-        case "conv":
-            return ConvInst(lnum=lnum, pre1=int(
-                tokens[2]), pre2=int(tokens[3]))
-        case "cp":
-            return CPInst(lnum=lnum, target=int(tokens[2]))
-        case "sp":
-            return SPInst(lnum=lnum, target=int(tokens[2]), bind=int(tokens[3]))
-    raise __fmtErr(lnum, inst_code, "no inst matched")
-
+    environment: list[Definition]
+    context: Context
+    proof: Term
+    prop: Term
 
 
 def verify(inst: Instruction, book: list[Judgement]) -> list[Judgement]:
-    print(inst)
+    if isinstance(inst, SortInst):
+        _book=book.copy()
+        _book.append(Judgement(
+            environment=[],
+            context=Context([]),
+            proof=parse_term("*"),
+            prop=parse_term("@")
+        ))
+        return _book
+    elif isinstance(inst, VarInst):
+        print(inst)
+        premise=book[inst.pre]
+        var_name: str=inst.var.__str__()
+        ctx=premise.context.extend(var_name, premise.proof)
+        _book=book.copy()
+        _book.append(Judgement(
+            environment=premise.environment,
+            context=ctx,
+            proof=inst.var,
+            prop=premise.proof
+        ))
+        return _book
+    elif isinstance(inst, WeakInst):
+        premise1=book[inst.pre1]
+        premise2=book[inst.pre2]
+        if not (premise1.environment == premise2.environment and premise1.context == premise2.context):
+            raise TypeError()
     return book
 
 
 if __name__ == "__main__":
     import argparse
-    apaser = argparse.ArgumentParser(prog='verify')
+    apaser=argparse.ArgumentParser(prog = 'verify')
     apaser.add_argument('filename')
-    args = apaser.parse_args()
-    filename = args.filename
+    args=apaser.parse_args()
+    filename=args.filename
     with open(filename, 'r') as f:
-        trees:list[Judgement] = []
+        trees: list[Judgement]=[]
         for line in f.readlines():
-            inst = scan_inst(line.replace("\n", ""))
-            trees = verify(inst, trees)
+            inst=scan_inst(line.replace("\n", ""))
+            trees=verify(inst, trees)
     for i, tree in enumerate(trees):
         print(i, tree)

@@ -18,5 +18,6 @@
 from parse import Term
 
 
-def bd_eqv(t1: Term, t2: Term)->bool:
+def bd_eqv(t1: Term, t2: Term) -> bool:
+    print(f"{__file__} TODO ")
     return True

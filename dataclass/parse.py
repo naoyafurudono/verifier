@@ -3,14 +3,13 @@
 
 from typing import Tuple
 import re
-import pprint as pp
 import argparse
 from dataclasses import dataclass
 
 
 @dataclass
 class Term:
-    def to_string(self) -> str:
+    def __str__(self) -> str:
         return f"TODO {self.__class__.__name__}"
 
 
@@ -21,13 +20,13 @@ class VarTerm(Term):
 
 @dataclass
 class StarTerm(Term):
-    def to_string(self) -> str:
+    def __str__(self) -> str:
         return "*"
 
 
 @dataclass
 class SortTerm(Term):
-    def to_string(self) -> str:
+    def __str__(self) -> str:
         return "@"
 
 
@@ -36,9 +35,9 @@ class AppTerm(Term):
     t1: Term
     t2: Term
 
-    def to_string(self) -> str:
-        s1 = self.t1.to_string()
-        s2 = self.t2.to_string()
+    def __str__(self) -> str:
+        s1 = self.t1.__str__()
+        s2 = self.t2.__str__()
         return f"%({s1})({s2})"
 
 
@@ -48,9 +47,9 @@ class LambdaTerm(Term):
     t2: Term
     name: str
 
-    def to_string(self) -> str:
-        s1 = self.t1.to_string()
-        s2 = self.t2.to_string()
+    def __str__(self) -> str:
+        s1 = self.t1.__str__()
+        s2 = self.t2.__str__()
         return f"${self.name}:({s1}).({s2})"
 
 
@@ -60,9 +59,9 @@ class PiTerm(Term):
     t2: Term
     name: str
 
-    def to_string(self) -> str:
-        s1 = self.t1.to_string()
-        s2 = self.t2.to_string()
+    def __str__(self) -> str:
+        s1 = self.t1.__str__()
+        s2 = self.t2.__str__()
         return f"?{self.name}:({s1}).({s2})"
 
 
@@ -205,7 +204,7 @@ if __name__ == "__main__":
     try:
         term = parse_term(code)
         print("succeed")
-        pp.pprint(term.to_string())
+        print(term)
     except (SyntaxError) as e:
         print('fail')
         print(e)

@@ -1,8 +1,9 @@
 from dataclasses import dataclass
 from typing import Tuple
-from inst import FormInst, Instruction, SortInst, VarInst, WeakInst, scan_inst
+from inst import ApplInst, FormInst, Instruction, SortInst, VarInst, WeakInst, scan_inst
 
-from parse import PiTerm, Term, parse_term
+from parse import AppTerm, PiTerm, Term, parse_term
+from subst import subst
 
 
 @dataclass
@@ -113,24 +114,47 @@ def verify(inst: Instruction, book: list[Judgement]) -> list[Judgement]:
         _book.append(Judgement(
             environment=premise1.environment,
             context=premise1.context,
-            proof=PiTerm(premise1.proof, premise2.proof, premise2.context.car()[0]),
+            proof=PiTerm(premise1.proof, premise2.proof,
+                         premise2.context.car()[0]),
             prop=premise2.prop
         ))
         return _book
-    # TODO appl, abst, conv, def, def-prim, inst, inst-prim, cp, sp
+    elif isinstance(inst, ApplInst):
+        premise1 = book[inst.pre1]
+        premise2 = book[inst.pre2]
+        if premise1.environment != premise2.environment:
+            raise TypeError()
+        if premise1.context != premise2.context:
+            raise TypeError()
+        mb_funtype = premise1.prop
+        if not isinstance(mb_funtype, PiTerm):
+            raise TypeError
+        else:
+            if not mb_funtype.t1 == premise2.prop:
+                raise TypeError
+            _book = book.copy()
+            _book.append(Judgement(
+                environment=premise1.environment,
+                context=premise1.context,
+                proof=AppTerm(premise1.proof, premise2.proof),
+                prop=subst(mb_funtype.t2, premise2.proof, mb_funtype.name)
+            ))
+            return _book
+
+    # TODO abst, conv, def, def-prim, inst, inst-prim, cp, sp
     return book
 
 
 if __name__ == "__main__":
     import argparse
-    apaser=argparse.ArgumentParser(prog = 'verify')
+    apaser = argparse.ArgumentParser(prog='verify')
     apaser.add_argument('filename')
-    args=apaser.parse_args()
-    filename=args.filename
+    args = apaser.parse_args()
+    filename = args.filename
     with open(filename, 'r') as f:
-        trees: list[Judgement]=[]
+        trees: list[Judgement] = []
         for line in f.readlines():
-            inst=scan_inst(line.replace("\n", ""))
-            trees=verify(inst, trees)
+            inst = scan_inst(line.replace("\n", ""))
+            trees = verify(inst, trees)
     for i, tree in enumerate(trees):
         print(i, tree)

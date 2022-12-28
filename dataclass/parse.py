@@ -73,6 +73,9 @@ class ConstTerm(Term):
     op: str
     children: list[Term]
 
+    def __str__(self) -> str:
+        return f"{self.op}[{','.join(map(lambda t: f'({t.__str__()})', self.children))}]"
+
 
 class SyntaxError(Exception):
     pass

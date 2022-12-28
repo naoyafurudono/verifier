@@ -128,6 +128,9 @@ def scan_inst(inst_code: str) -> Instruction:
         case "form":
             return FormInst(lnum=lnum, pre1=int(
                 tokens[2]), pre2=int(tokens[3]))
+        case "appl":
+            return ApplInst(lnum=lnum, pre1=int(
+                tokens[2]), pre2=int(tokens[3]))
         case "abst":
             return AbstInst(lnum=lnum, pre1=int(
                 tokens[2]), pre2=int(tokens[3]))

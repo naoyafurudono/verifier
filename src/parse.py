@@ -39,9 +39,7 @@ class AppTerm(Term):
     t2: Term
 
     def __str__(self) -> str:
-        s1 = self.t1.__str__()
-        s2 = self.t2.__str__()
-        return f"%({s1})({s2})"
+        return f"%({self.t1})({self.t2})"
 
 
 @dataclass(frozen=True)
@@ -51,9 +49,7 @@ class LambdaTerm(Term):
     name: str
 
     def __str__(self) -> str:
-        s1 = self.t1.__str__()
-        s2 = self.t2.__str__()
-        return f"${self.name}:({s1}).({s2})"
+        return f"${self.name}:({self.t1}).({self.t2})"
 
 
 @dataclass(frozen=True)
@@ -63,9 +59,7 @@ class PiTerm(Term):
     name: str
 
     def __str__(self) -> str:
-        s1 = self.t1.__str__()
-        s2 = self.t2.__str__()
-        return f"?{self.name}:({s1}).({s2})"
+        return f"?{self.name}:({self.t1}).({self.t2})"
 
 
 @dataclass(frozen=True)
@@ -74,7 +68,7 @@ class ConstTerm(Term):
     children: list[Term]
 
     def __str__(self) -> str:
-        return f"{self.op}[{','.join(map(lambda t: f'({t.__str__()})', self.children))}]"
+        return f"{self.op}[{','.join(map(lambda t: f'({t})', self.children))}]"
 
 
 class SyntaxError(Exception):
@@ -104,7 +98,8 @@ def parse_term(code: str) -> Term:
         code1, end = find_first_term(code)
         if not code[end] == ".":
             raise SyntaxError(
-                f"parsing lambda in {code}\nexpect: '.', found: {code[end]}\n")
+                f"parsing lambda in {code}\nexpect: '.', found: {code[end]}\n"
+            )
         code2, _ = find_first_term(code[end:])
         t1 = parse_term(code1)
         t2 = parse_term(code2)
@@ -114,7 +109,8 @@ def parse_term(code: str) -> Term:
         code1, end = find_first_term(code)
         if not code[end] == ".":
             raise SyntaxError(
-                f"parsing type in {code}\nexpect: '.', found: {code[end]}\n")
+                f"parsing type in {code}\nexpect: '.', found: {code[end]}\n"
+            )
         code2, _ = find_first_term(code[end:])
         t1 = parse_term(code1)
         t2 = parse_term(code2)
@@ -128,7 +124,8 @@ def parse_term(code: str) -> Term:
             if next_start == 0:
                 if fresh_code[next_start] != "]":
                     raise SyntaxError(
-                        f"`{fresh_code}` {next_start} {fresh_code[next_start]}")
+                        f"`{fresh_code}` {next_start} {fresh_code[next_start]}"
+                    )
                 break
             if not fresh_code[next_start] in [",", "]"]:
                 raise SyntaxError(f"`{fresh_code}` {next_start}")
@@ -166,7 +163,7 @@ def find_first_term(code: str) -> Tuple[str, int]:
             if count == 0:
                 end = i
                 break
-    return code[start+1:end], end+1
+    return code[start + 1 : end], end + 1
 
 
 var_re = re.compile("^[a-zA-Z]$")
@@ -212,7 +209,9 @@ class AlphaEqvException(Exception):
     pass
 
 
-def alpha_with_env_depth(t1: Term, t2: Term, env1: dict[str, int], env2: dict[str, int], depth: int) -> bool:
+def alpha_with_env_depth(
+    t1: Term, t2: Term, env1: dict[str, int], env2: dict[str, int], depth: int
+) -> bool:
     # 代入をしないで、環境をもつことにした。
     # 代入後の部分は、それ以降代入されることのない変数なのでこの手法でうまくいく。
     # 環境は辞書で表現する。Shadowingは単に環境を上書きすれば良い。
@@ -221,31 +220,39 @@ def alpha_with_env_depth(t1: Term, t2: Term, env1: dict[str, int], env2: dict[st
     if type(t1) != type(t2):
         return False
 
-    name = t1.__class__
     if isinstance(t1, VarTerm) and isinstance(t2, VarTerm):
-        name1 = env1.get(t1.name)
-        name2 = env2.get(t2.name)
-        if (not name1 is None) and (not name2 is None):
-            return name1 == name2
-        if (not name1 is None) or (not name2 is None):
-            return False
-        # 両方自由
-        return t1.name == t2.name
-    elif isinstance(t1, LambdaTerm) and isinstance(t2, LambdaTerm) or (
-            isinstance(t1, PiTerm) and isinstance(t2, PiTerm)):
+        depth1 = env1.get(t1.name)
+        depth2 = env2.get(t2.name)
+        match (depth1, depth2):
+            case (None, None):
+                return t1.name == t2.name
+            case (None, _):
+                return False
+            case (_, None):
+                return False
+            case (d1, d2):
+                return d1 == d2
+    elif (isinstance(t1, LambdaTerm) and isinstance(t2, LambdaTerm)) or (
+        isinstance(t1, PiTerm) and isinstance(t2, PiTerm)
+    ):
         # $x:(M).(N)のMを検査
-        if not alpha_eqv(t1.t1, t2.t1):
+        if not alpha_with_env_depth(t1.t1, t2.t1, env1, env2, depth):
             return False
         envc1 = env1.copy()
         envc2 = env2.copy()
         envc1[t1.name] = depth
         envc2[t2.name] = depth
-        return alpha_with_env_depth(t1.t2, t2.t2, envc1, envc2, depth+1)
-    elif isinstance(t1, StarTerm) and isinstance(t2, StarTerm) or (
-            isinstance(t1, SortTerm) and isinstance(t2, SortTerm)):
+        return alpha_with_env_depth(t1.t2, t2.t2, envc1, envc2, depth + 1)
+    elif (
+        isinstance(t1, StarTerm)
+        and isinstance(t2, StarTerm)
+        or (isinstance(t1, SortTerm) and isinstance(t2, SortTerm))
+    ):
         return True
     elif isinstance(t1, AppTerm) and isinstance(t2, AppTerm):
-        return alpha_with_env_depth(t1.t1, t2.t1, env1, env2, depth) and alpha_with_env_depth(t1.t2, t2.t2, env1, env2, depth)
+        return alpha_with_env_depth(
+            t1.t1, t2.t1, env1, env2, depth
+        ) and alpha_with_env_depth(t1.t2, t2.t2, env1, env2, depth)
 
     elif isinstance(t1, ConstTerm) and isinstance(t2, ConstTerm):
         if t1.op != t2.op:
@@ -255,22 +262,20 @@ def alpha_with_env_depth(t1: Term, t2: Term, env1: dict[str, int], env2: dict[st
                 return False
         return True
 
-    raise AlphaEqvException(
-        f"Error at alpha_with_eqv: unexpected term: {t1,t2}")
+    raise AlphaEqvException(f"Error at alpha_with_eqv: unexpected term: {t1,t2}")
 
 
 if __name__ == "__main__":
-    apaser = argparse.ArgumentParser(prog='20221212')
-    apaser.add_argument('filename')
+    apaser = argparse.ArgumentParser(prog="20221212")
+    apaser.add_argument("filename")
     args = apaser.parse_args()
     filename = args.filename
-    with open(filename, 'r') as f:
+    with open(filename, "r") as f:
         code = f.readline()
     try:
         term = parse_term(code)
         print("succeed")
         print(term)
     except (SyntaxError) as e:
-        print('fail')
+        print("fail")
         print(e)
-

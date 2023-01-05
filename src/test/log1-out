@@ -1,0 +1,471 @@
+0  ;  |- * : @
+1  ;  |- * : @
+2  ; a:* |- a : *
+3  ; a:* |- * : @
+4  ; a:* |- a : *
+5  ;  |- ?a:(*).(a) : *
+6  ;  |- * : @
+7  ;  |- * : @
+8  ;  |- ?a:(*).(a) : *
+9 contra ;  |- * : @
+10 contra ;  |- * : @
+11 contra ; A:* |- A : *
+12 contra ; A:* |- * : @
+13 contra ; A:* |- * : @
+14 contra ; A:* |- * : @
+15 contra ; A:*, B:* |- B : *
+16 contra ; A:*, B:* |- * : @
+17 contra ; A:*, B:* |- * : @
+18 contra ; A:*, B:* |- A : *
+19 contra ; A:*, B:*, a:A |- a : A
+20 contra ; A:*, B:*, a:A |- * : @
+21 contra ; A:*, B:*, a:A |- B : *
+22 contra ; A:*, B:* |- ?a:(A).(B) : *
+23 contra ; A:*, B:* |- * : @
+24 contra ; A:*, B:* |- * : @
+25 contra ; A:*, B:* |- ?a:(A).(B) : *
+26 contra, implies ;  |- * : @
+27 contra, implies ;  |- * : @
+28 contra, implies ; A:* |- A : *
+29 contra, implies ; A:* |- * : @
+30 contra, implies ; A:* |- * : @
+31 contra, implies ; A:* |- A : *
+32 contra, implies ; A:*, a:A |- a : A
+33 contra, implies ; A:*, a:A |- * : @
+34 contra, implies ; A:*, a:A |- a : A
+35 contra, implies ; A:*, a:A |- A : *
+36 contra, implies ; A:* |- ?a:(A).(A) : *
+37 contra, implies ; A:*, a:A |- a : A
+38 contra, implies ; A:* |- $a:(A).(a) : ?a:(A).(A)
+39 contra, implies ; A:* |- * : @
+40 contra, implies ; A:* |- A : *
+41 contra, implies ; A:* |- A : *
+42 contra, implies ; A:* |- * : @
+43 contra, implies ; A:* |- * : @
+44 contra, implies ; A:* |- A : *
+45 contra, implies ; A:* |- A : *
+46 contra, implies ; A:* |- implies[(A),(A)] : *
+47 contra, implies ; A:* |- $a:(A).(a) : implies[(A),(A)]
+48 contra, implies, a2_fig11.16 ;  |- * : @
+49 contra, implies, a2_fig11.16 ;  |- * : @
+50 contra, implies, a2_fig11.16 ; A:* |- A : *
+51 contra, implies, a2_fig11.16 ; A:* |- * : @
+52 contra, implies, a2_fig11.16 ; A:* |- * : @
+53 contra, implies, a2_fig11.16 ; A:* |- A : *
+54 contra, implies, a2_fig11.16 ; A:* |- contra[] : *
+55 contra, implies, a2_fig11.16 ; A:* |- * : @
+56 contra, implies, a2_fig11.16 ; A:* |- * : @
+57 contra, implies, a2_fig11.16 ; A:* |- A : *
+58 contra, implies, a2_fig11.16 ; A:* |- contra[] : *
+59 contra, implies, a2_fig11.16 ; A:* |- implies[(A),(contra[])] : *
+60 contra, implies, a2_fig11.16 ; A:* |- * : @
+61 contra, implies, a2_fig11.16 ; A:* |- * : @
+62 contra, implies, a2_fig11.16 ; A:* |- implies[(A),(contra[])] : *
+63 contra, implies, a2_fig11.16, not ;  |- * : @
+64 contra, implies, a2_fig11.16, not ;  |- * : @
+65 contra, implies, a2_fig11.16, not ; A:* |- A : *
+66 contra, implies, a2_fig11.16, not ; A:* |- * : @
+67 contra, implies, a2_fig11.16, not ; A:* |- * : @
+68 contra, implies, a2_fig11.16, not ; A:* |- * : @
+69 contra, implies, a2_fig11.16, not ; A:*, B:* |- B : *
+70 contra, implies, a2_fig11.16, not ; A:*, B:* |- * : @
+71 contra, implies, a2_fig11.16, not ; A:*, B:* |- * : @
+72 contra, implies, a2_fig11.16, not ; A:*, B:* |- * : @
+73 contra, implies, a2_fig11.16, not ; A:*, B:*, a:* |- a : *
+74 contra, implies, a2_fig11.16, not ; A:*, B:*, a:* |- * : @
+75 contra, implies, a2_fig11.16, not ; A:*, B:*, a:* |- A : *
+76 contra, implies, a2_fig11.16, not ; A:*, B:*, a:* |- a : *
+77 contra, implies, a2_fig11.16, not ; A:*, B:*, a:* |- * : @
+78 contra, implies, a2_fig11.16, not ; A:*, B:*, a:* |- * : @
+79 contra, implies, a2_fig11.16, not ; A:*, B:*, a:* |- A : *
+80 contra, implies, a2_fig11.16, not ; A:*, B:*, a:* |- a : *
+81 contra, implies, a2_fig11.16, not ; A:*, B:*, a:* |- implies[(A),(a)] : *
+82 contra, implies, a2_fig11.16, not ; A:*, B:*, a:* |- B : *
+83 contra, implies, a2_fig11.16, not ; A:*, B:*, a:* |- a : *
+84 contra, implies, a2_fig11.16, not ; A:*, B:*, a:* |- * : @
+85 contra, implies, a2_fig11.16, not ; A:*, B:*, a:* |- * : @
+86 contra, implies, a2_fig11.16, not ; A:*, B:*, a:* |- B : *
+87 contra, implies, a2_fig11.16, not ; A:*, B:*, a:* |- a : *
+88 contra, implies, a2_fig11.16, not ; A:*, B:*, a:* |- implies[(B),(a)] : *
+89 contra, implies, a2_fig11.16, not ; A:*, B:*, a:* |- a : *
+90 contra, implies, a2_fig11.16, not ; A:*, B:*, a:* |- * : @
+91 contra, implies, a2_fig11.16, not ; A:*, B:*, a:* |- * : @
+92 contra, implies, a2_fig11.16, not ; A:*, B:*, a:* |- implies[(B),(a)] : *
+93 contra, implies, a2_fig11.16, not ; A:*, B:*, a:* |- a : *
+94 contra, implies, a2_fig11.16, not ; A:*, B:*, a:* |- implies[(implies[(B),(a)]),(a)] : *
+95 contra, implies, a2_fig11.16, not ; A:*, B:*, a:* |- * : @
+96 contra, implies, a2_fig11.16, not ; A:*, B:*, a:* |- * : @
+97 contra, implies, a2_fig11.16, not ; A:*, B:*, a:* |- implies[(A),(a)] : *
+98 contra, implies, a2_fig11.16, not ; A:*, B:*, a:* |- implies[(implies[(B),(a)]),(a)] : *
+99 contra, implies, a2_fig11.16, not ; A:*, B:*, a:* |- implies[(implies[(A),(a)]),(implies[(implies[(B),(a)]),(a)])] : *
+100 contra, implies, a2_fig11.16, not ; A:*, B:* |- ?a:(*).(implies[(implies[(A),(a)]),(implies[(implies[(B),(a)]),(a)])]) : *
+101 contra, implies, a2_fig11.16, not ; A:*, B:* |- * : @
+102 contra, implies, a2_fig11.16, not ; A:*, B:* |- * : @
+103 contra, implies, a2_fig11.16, not ; A:*, B:* |- ?a:(*).(implies[(implies[(A),(a)]),(implies[(implies[(B),(a)]),(a)])]) : *
+104 contra, implies, a2_fig11.16, not, or ;  |- * : @
+105 contra, implies, a2_fig11.16, not, or ;  |- * : @
+106 contra, implies, a2_fig11.16, not, or ; A:* |- A : *
+107 contra, implies, a2_fig11.16, not, or ; A:* |- * : @
+108 contra, implies, a2_fig11.16, not, or ; A:* |- * : @
+109 contra, implies, a2_fig11.16, not, or ; A:* |- A : *
+110 contra, implies, a2_fig11.16, not, or ; A:* |- * : @
+111 contra, implies, a2_fig11.16, not, or ; A:* |- A : *
+112 contra, implies, a2_fig11.16, not, or ; A:* |- not[(A)] : *
+113 contra, implies, a2_fig11.16, not, or ; A:* |- * : @
+114 contra, implies, a2_fig11.16, not, or ; A:* |- not[(A)] : *
+115 contra, implies, a2_fig11.16, not, or ; A:* |- not[(not[(A)])] : *
+116 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])] |- u : not[(not[(A)])]
+117 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])] |- not[(not[(A)])] : *
+118 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])] |- * : @
+119 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])] |- A : *
+120 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])] |- * : @
+121 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])] |- A : *
+122 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])] |- not[(A)] : *
+123 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])], v:not[(A)] |- v : not[(A)]
+124 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])], v:not[(A)] |- not[(A)] : *
+125 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])], v:not[(A)] |- * : @
+126 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])], v:not[(A)] |- u : not[(not[(A)])]
+127 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])], v:not[(A)] |- v : not[(A)]
+128 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])], v:not[(A)] |- A : *
+129 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])], v:not[(A)], a:A |- a : A
+130 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])], v:not[(A)], a:A |- * : @
+131 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])], v:not[(A)], a:A |- * : @
+132 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])], v:not[(A)], a:A, c:* |- c : *
+133 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])], v:not[(A)], a:A, c:* |- * : @
+134 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])], v:not[(A)], a:A, c:* |- c : *
+135 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])], v:not[(A)], a:A |- ?c:(*).(c) : *
+136 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])], v:not[(A)] |- ?a:(A).(?c:(*).(c)) : *
+137 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])], v:not[(A)], b:?a:(A).(?c:(*).(c)) |- b : ?a:(A).(?c:(*).(c))
+138 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])], v:not[(A)], b:?a:(A).(?c:(*).(c)) |- * : @
+139 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])], v:not[(A)], b:?a:(A).(?c:(*).(c)) |- * : @
+140 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])], v:not[(A)], b:?a:(A).(?c:(*).(c)), a:* |- a : *
+141 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])], v:not[(A)], b:?a:(A).(?c:(*).(c)), a:* |- * : @
+142 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])], v:not[(A)], b:?a:(A).(?c:(*).(c)), a:* |- a : *
+143 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])], v:not[(A)], b:?a:(A).(?c:(*).(c)) |- ?a:(*).(a) : *
+144 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])], v:not[(A)] |- ?b:(?a:(A).(?c:(*).(c))).(?a:(*).(a)) : *
+145 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])], v:not[(A)] |- A : *
+146 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])], v:not[(A)], a:A |- a : A
+147 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])], v:not[(A)], a:A |- * : @
+148 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])], v:not[(A)], a:A |- * : @
+149 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])], v:not[(A)], a:A, c:* |- c : *
+150 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])], v:not[(A)], a:A, c:* |- * : @
+151 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])], v:not[(A)], a:A, c:* |- c : *
+152 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])], v:not[(A)], a:A |- ?c:(*).(c) : *
+153 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])], v:not[(A)] |- ?a:(A).(?c:(*).(c)) : *
+154 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])], v:not[(A)] |- u : ?b:(?a:(A).(?c:(*).(c))).(?a:(*).(a))
+155 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])], v:not[(A)] |- v : ?a:(A).(?c:(*).(c))
+156 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])], v:not[(A)] |- %(u)(v) : ?^10:(*).(^10)
+157 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])], v:not[(A)] |- * : @
+158 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])], v:not[(A)] |- contra[] : *
+159 contra, implies, a2_fig11.16, not, or ; A:*, u:not[(not[(A)])], v:not[(A)] |- %(u)(v) : contra[]
+160 contra, implies, a2_fig11.16, not, or, a3_fig11.16 ;  |- * : @
+161 contra, implies, a2_fig11.16, not, or, a3_fig11.16 ;  |- * : @
+162 contra, implies, a2_fig11.16, not, or, a3_fig11.16 ; A:* |- A : *
+163 contra, implies, a2_fig11.16, not, or, a3_fig11.16 ; A:* |- * : @
+164 contra, implies, a2_fig11.16, not, or, a3_fig11.16 ; A:* |- * : @
+165 contra, implies, a2_fig11.16, not, or, a3_fig11.16 ; A:* |- A : *
+166 contra, implies, a2_fig11.16, not, or, a3_fig11.16 ; A:* |- A : *
+167 contra, implies, a2_fig11.16, not, or, a3_fig11.16 ; A:* |- * : @
+168 contra, implies, a2_fig11.16, not, or, a3_fig11.16 ; A:* |- A : *
+169 contra, implies, a2_fig11.16, not, or, a3_fig11.16 ; A:* |- not[(A)] : *
+170 contra, implies, a2_fig11.16, not, or, a3_fig11.16 ; A:* |- * : @
+171 contra, implies, a2_fig11.16, not, or, a3_fig11.16 ; A:* |- * : @
+172 contra, implies, a2_fig11.16, not, or, a3_fig11.16 ; A:* |- A : *
+173 contra, implies, a2_fig11.16, not, or, a3_fig11.16 ; A:* |- not[(A)] : *
+174 contra, implies, a2_fig11.16, not, or, a3_fig11.16 ; A:* |- or[(A),(not[(A)])] : *
+175 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ;  |- * : @
+176 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ;  |- * : @
+177 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:* |- A : *
+178 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:* |- * : @
+179 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:* |- * : @
+180 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:* |- A : *
+181 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:* |- * : @
+182 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:* |- A : *
+183 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:* |- not[(A)] : *
+184 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:* |- * : @
+185 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:* |- not[(A)] : *
+186 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:* |- not[(not[(A)])] : *
+187 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])] |- u : not[(not[(A)])]
+188 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])] |- not[(not[(A)])] : *
+189 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])] |- * : @
+190 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])] |- A : *
+191 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])] |- * : @
+192 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])] |- A : *
+193 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])] |- not[(A)] : *
+194 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])], v:not[(A)] |- v : not[(A)]
+195 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])], v:not[(A)] |- not[(A)] : *
+196 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])], v:not[(A)] |- * : @
+197 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])], v:not[(A)] |- A : *
+198 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])], v:not[(A)] |- u : not[(not[(A)])]
+199 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])], v:not[(A)] |- v : not[(A)]
+200 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])], v:not[(A)] |- * : @
+201 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])], v:not[(A)] |- A : *
+202 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])], v:not[(A)] |- * : @
+203 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])], v:not[(A)] |- A : *
+204 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])], v:not[(A)] |- not[(A)] : *
+205 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])], v:not[(A)] |- * : @
+206 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])], v:not[(A)] |- not[(A)] : *
+207 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])], v:not[(A)] |- not[(not[(A)])] : *
+208 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])], v:not[(A)] |- A : *
+209 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])], v:not[(A)] |- * : @
+210 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])], v:not[(A)] |- A : *
+211 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])], v:not[(A)] |- not[(A)] : *
+212 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])], v:not[(A)] |- A : *
+213 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])], v:not[(A)] |- u : not[(not[(A)])]
+214 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])], v:not[(A)] |- v : not[(A)]
+215 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])], v:not[(A)] |- a3_fig11.16[(A),(u),(v)] : contra[]
+216 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])], v:not[(A)] |- A : *
+217 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])], v:not[(A)] |- * : @
+218 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])], v:not[(A)], a:* |- a : *
+219 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])], v:not[(A)], a:* |- * : @
+220 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])], v:not[(A)], a:* |- a : *
+221 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])], v:not[(A)] |- ?a:(*).(a) : *
+222 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])], v:not[(A)] |- * : @
+223 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])], v:not[(A)] |- a3_fig11.16[(A),(u),(v)] : ?a:(*).(a)
+224 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])], v:not[(A)] |- A : *
+225 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])], v:not[(A)] |- %(a3_fig11.16[(A),(u),(v)])(A) : A
+226 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])], v:not[(A)] |- * : @
+227 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])], v:not[(A)] |- A : *
+228 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd ; A:*, u:not[(not[(A)])], v:not[(A)] |- %(a3_fig11.16[(A),(u),(v)])(A) : A
+229 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ;  |- * : @
+230 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ;  |- * : @
+231 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:* |- A : *
+232 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:* |- * : @
+233 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:* |- * : @
+234 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:* |- A : *
+235 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:* |- * : @
+236 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:* |- A : *
+237 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:* |- not[(A)] : *
+238 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:* |- * : @
+239 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:* |- not[(A)] : *
+240 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:* |- not[(not[(A)])] : *
+241 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])] |- u : not[(not[(A)])]
+242 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])] |- not[(not[(A)])] : *
+243 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])] |- * : @
+244 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])] |- A : *
+245 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])] |- * : @
+246 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])] |- A : *
+247 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])] |- not[(A)] : *
+248 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])], a:not[(A)] |- a : not[(A)]
+249 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])], a:not[(A)] |- * : @
+250 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])], a:not[(A)] |- A : *
+251 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])], a:not[(A)] |- u : not[(not[(A)])]
+252 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])], a:not[(A)] |- a : not[(A)]
+253 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])], a:not[(A)] |- * : @
+254 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])], a:not[(A)] |- A : *
+255 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])], a:not[(A)] |- * : @
+256 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])], a:not[(A)] |- A : *
+257 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])], a:not[(A)] |- not[(A)] : *
+258 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])], a:not[(A)] |- * : @
+259 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])], a:not[(A)] |- not[(A)] : *
+260 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])], a:not[(A)] |- not[(not[(A)])] : *
+261 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])], a:not[(A)] |- A : *
+262 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])], a:not[(A)] |- * : @
+263 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])], a:not[(A)] |- A : *
+264 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])], a:not[(A)] |- not[(A)] : *
+265 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])], a:not[(A)] |- A : *
+266 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])], a:not[(A)] |- u : not[(not[(A)])]
+267 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])], a:not[(A)] |- a : not[(A)]
+268 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])], a:not[(A)] |- a4_fig11.16[(A),(u),(a)] : A
+269 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])], a:not[(A)] |- A : *
+270 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])] |- ?a:(not[(A)]).(A) : *
+271 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])], a:not[(A)] |- a4_fig11.16[(A),(u),(a)] : A
+272 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])] |- $a:(not[(A)]).(a4_fig11.16[(A),(u),(a)]) : ?a:(not[(A)]).(A)
+273 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])] |- * : @
+274 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])] |- A : *
+275 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])] |- * : @
+276 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])] |- A : *
+277 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])] |- not[(A)] : *
+278 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])] |- A : *
+279 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])] |- * : @
+280 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])] |- * : @
+281 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])] |- not[(A)] : *
+282 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])] |- A : *
+283 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])] |- implies[(not[(A)]),(A)] : *
+284 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16 ; A:*, u:not[(not[(A)])] |- $a:(not[(A)]).(a4_fig11.16[(A),(u),(a)]) : implies[(not[(A)]),(A)]
+285 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ;  |- * : @
+286 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ;  |- * : @
+287 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:* |- A : *
+288 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:* |- * : @
+289 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:* |- * : @
+290 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:* |- A : *
+291 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:* |- * : @
+292 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:* |- A : *
+293 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:* |- not[(A)] : *
+294 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:* |- * : @
+295 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:* |- not[(A)] : *
+296 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:* |- not[(not[(A)])] : *
+297 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- u : not[(not[(A)])]
+298 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- not[(not[(A)])] : *
+299 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- * : @
+300 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- A : *
+301 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- * : @
+302 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- A : *
+303 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- exc_thrd[(A)] : or[(A),(not[(A)])]
+304 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- A : *
+305 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- * : @
+306 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], c:* |- c : *
+307 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], c:* |- * : @
+308 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], c:* |- A : *
+309 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], c:*, a:A |- a : A
+310 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], c:*, a:A |- * : @
+311 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], c:*, a:A |- c : *
+312 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], c:* |- ?a:(A).(c) : *
+313 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], c:*, b:?a:(A).(c) |- b : ?a:(A).(c)
+314 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], c:*, b:?a:(A).(c) |- * : @
+315 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], c:*, b:?a:(A).(c) |- A : *
+316 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], c:*, b:?a:(A).(c), a:A |- a : A
+317 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], c:*, b:?a:(A).(c), a:A |- * : @
+318 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], c:*, b:?a:(A).(c), a:A |- * : @
+319 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], c:*, b:?a:(A).(c), a:A, d:* |- d : *
+320 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], c:*, b:?a:(A).(c), a:A, d:* |- * : @
+321 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], c:*, b:?a:(A).(c), a:A, d:* |- d : *
+322 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], c:*, b:?a:(A).(c), a:A |- ?d:(*).(d) : *
+323 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], c:*, b:?a:(A).(c) |- ?a:(A).(?d:(*).(d)) : *
+324 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], c:*, b:?a:(A).(c), d:?a:(A).(?d:(*).(d)) |- d : ?a:(A).(?d:(*).(d))
+325 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], c:*, b:?a:(A).(c), d:?a:(A).(?d:(*).(d)) |- * : @
+326 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], c:*, b:?a:(A).(c), d:?a:(A).(?d:(*).(d)) |- c : *
+327 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], c:*, b:?a:(A).(c) |- ?d:(?a:(A).(?d:(*).(d))).(c) : *
+328 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], c:*, b:?a:(A).(c), e:?d:(?a:(A).(?d:(*).(d))).(c) |- e : ?d:(?a:(A).(?d:(*).(d))).(c)
+329 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], c:*, b:?a:(A).(c), e:?d:(?a:(A).(?d:(*).(d))).(c) |- * : @
+330 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], c:*, b:?a:(A).(c), e:?d:(?a:(A).(?d:(*).(d))).(c) |- c : *
+331 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], c:*, b:?a:(A).(c) |- ?e:(?d:(?a:(A).(?d:(*).(d))).(c)).(c) : *
+332 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], c:* |- ?b:(?a:(A).(c)).(?e:(?d:(?a:(A).(?d:(*).(d))).(c)).(c)) : *
+333 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- ?c:(*).(?b:(?a:(A).(c)).(?e:(?d:(?a:(A).(?d:(*).(d))).(c)).(c))) : *
+334 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- * : @
+335 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- exc_thrd[(A)] : ?c:(*).(?b:(?a:(A).(c)).(?e:(?d:(?a:(A).(?d:(*).(d))).(c)).(c)))
+336 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- A : *
+337 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- %(exc_thrd[(A)])(A) : ?^70:(?^69:(A).(A)).(?^74:(?^73:(?^71:(A).(?^72:(*).(^72))).(A)).(A))
+338 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- A : *
+339 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- * : @
+340 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- A : *
+341 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- a2_fig11.16[(A)] : implies[(A),(A)]
+342 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- A : *
+343 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], a:A |- a : A
+344 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], a:A |- * : @
+345 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], a:A |- A : *
+346 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- ?a:(A).(A) : *
+347 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], b:?a:(A).(A) |- b : ?a:(A).(A)
+348 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], b:?a:(A).(A) |- * : @
+349 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], b:?a:(A).(A) |- A : *
+350 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], b:?a:(A).(A), a:A |- a : A
+351 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], b:?a:(A).(A), a:A |- * : @
+352 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], b:?a:(A).(A), a:A |- * : @
+353 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], b:?a:(A).(A), a:A, c:* |- c : *
+354 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], b:?a:(A).(A), a:A, c:* |- * : @
+355 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], b:?a:(A).(A), a:A, c:* |- c : *
+356 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], b:?a:(A).(A), a:A |- ?c:(*).(c) : *
+357 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], b:?a:(A).(A) |- ?a:(A).(?c:(*).(c)) : *
+358 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], b:?a:(A).(A), c:?a:(A).(?c:(*).(c)) |- c : ?a:(A).(?c:(*).(c))
+359 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], b:?a:(A).(A), c:?a:(A).(?c:(*).(c)) |- * : @
+360 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], b:?a:(A).(A), c:?a:(A).(?c:(*).(c)) |- A : *
+361 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], b:?a:(A).(A) |- ?c:(?a:(A).(?c:(*).(c))).(A) : *
+362 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], b:?a:(A).(A), d:?c:(?a:(A).(?c:(*).(c))).(A) |- d : ?c:(?a:(A).(?c:(*).(c))).(A)
+363 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], b:?a:(A).(A), d:?c:(?a:(A).(?c:(*).(c))).(A) |- * : @
+364 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], b:?a:(A).(A), d:?c:(?a:(A).(?c:(*).(c))).(A) |- A : *
+365 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], b:?a:(A).(A) |- ?d:(?c:(?a:(A).(?c:(*).(c))).(A)).(A) : *
+366 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- ?b:(?a:(A).(A)).(?d:(?c:(?a:(A).(?c:(*).(c))).(A)).(A)) : *
+367 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- A : *
+368 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], a:A |- a : A
+369 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], a:A |- * : @
+370 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], a:A |- A : *
+371 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- ?a:(A).(A) : *
+372 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- %(exc_thrd[(A)])(A) : ?b:(?a:(A).(A)).(?d:(?c:(?a:(A).(?c:(*).(c))).(A)).(A))
+373 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- a2_fig11.16[(A)] : ?a:(A).(A)
+374 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- %(%(exc_thrd[(A)])(A))(a2_fig11.16[(A)]) : ?^80:(?^79:(?^77:(A).(?^78:(*).(^78))).(A)).(A)
+375 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- A : *
+376 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- u : not[(not[(A)])]
+377 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- * : @
+378 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- A : *
+379 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- * : @
+380 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- A : *
+381 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- not[(A)] : *
+382 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- * : @
+383 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- not[(A)] : *
+384 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- not[(not[(A)])] : *
+385 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- A : *
+386 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- u : not[(not[(A)])]
+387 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- a5_fig11.16[(A),(u)] : implies[(not[(A)]),(A)]
+388 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- A : *
+389 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], a:A |- a : A
+390 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], a:A |- * : @
+391 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], a:A |- * : @
+392 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], a:A, c:* |- c : *
+393 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], a:A, c:* |- * : @
+394 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], a:A, c:* |- c : *
+395 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], a:A |- ?c:(*).(c) : *
+396 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- ?a:(A).(?c:(*).(c)) : *
+397 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], b:?a:(A).(?c:(*).(c)) |- b : ?a:(A).(?c:(*).(c))
+398 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], b:?a:(A).(?c:(*).(c)) |- * : @
+399 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], b:?a:(A).(?c:(*).(c)) |- A : *
+400 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- ?b:(?a:(A).(?c:(*).(c))).(A) : *
+401 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], b:?b:(?a:(A).(?c:(*).(c))).(A) |- b : ?b:(?a:(A).(?c:(*).(c))).(A)
+402 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], b:?b:(?a:(A).(?c:(*).(c))).(A) |- * : @
+403 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], b:?b:(?a:(A).(?c:(*).(c))).(A) |- A : *
+404 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- ?b:(?b:(?a:(A).(?c:(*).(c))).(A)).(A) : *
+405 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- A : *
+406 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], a:A |- a : A
+407 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], a:A |- * : @
+408 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], a:A |- * : @
+409 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], a:A, c:* |- c : *
+410 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], a:A, c:* |- * : @
+411 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], a:A, c:* |- c : *
+412 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], a:A |- ?c:(*).(c) : *
+413 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- ?a:(A).(?c:(*).(c)) : *
+414 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], b:?a:(A).(?c:(*).(c)) |- b : ?a:(A).(?c:(*).(c))
+415 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], b:?a:(A).(?c:(*).(c)) |- * : @
+416 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])], b:?a:(A).(?c:(*).(c)) |- A : *
+417 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- ?b:(?a:(A).(?c:(*).(c))).(A) : *
+418 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- %(%(exc_thrd[(A)])(A))(a2_fig11.16[(A)]) : ?b:(?b:(?a:(A).(?c:(*).(c))).(A)).(A)
+419 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- a5_fig11.16[(A),(u)] : ?b:(?a:(A).(?c:(*).(c))).(A)
+420 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- %(%(%(exc_thrd[(A)])(A))(a2_fig11.16[(A)]))(a5_fig11.16[(A),(u)]) : A
+421 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- * : @
+422 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- A : *
+423 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16 ; A:*, u:not[(not[(A)])] |- %(%(%(exc_thrd[(A)])(A))(a2_fig11.16[(A)]))(a5_fig11.16[(A),(u)]) : A
+424 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ;  |- * : @
+425 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ;  |- * : @
+426 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:* |- A : *
+427 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:* |- * : @
+428 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:* |- * : @
+429 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:* |- A : *
+430 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:* |- * : @
+431 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:* |- A : *
+432 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:* |- not[(A)] : *
+433 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:* |- * : @
+434 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:* |- not[(A)] : *
+435 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:* |- not[(not[(A)])] : *
+436 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:*, a:not[(not[(A)])] |- a : not[(not[(A)])]
+437 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:*, a:not[(not[(A)])] |- * : @
+438 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:*, a:not[(not[(A)])] |- A : *
+439 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:*, a:not[(not[(A)])] |- a : not[(not[(A)])]
+440 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:*, a:not[(not[(A)])] |- * : @
+441 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:*, a:not[(not[(A)])] |- A : *
+442 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:*, a:not[(not[(A)])] |- * : @
+443 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:*, a:not[(not[(A)])] |- A : *
+444 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:*, a:not[(not[(A)])] |- not[(A)] : *
+445 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:*, a:not[(not[(A)])] |- * : @
+446 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:*, a:not[(not[(A)])] |- not[(A)] : *
+447 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:*, a:not[(not[(A)])] |- not[(not[(A)])] : *
+448 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:*, a:not[(not[(A)])] |- A : *
+449 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:*, a:not[(not[(A)])] |- a : not[(not[(A)])]
+450 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:*, a:not[(not[(A)])] |- a6_fig11.16[(A),(a)] : A
+451 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:*, a:not[(not[(A)])] |- A : *
+452 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:* |- ?a:(not[(not[(A)])]).(A) : *
+453 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:*, a:not[(not[(A)])] |- a6_fig11.16[(A),(a)] : A
+454 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:* |- $a:(not[(not[(A)])]).(a6_fig11.16[(A),(a)]) : ?a:(not[(not[(A)])]).(A)
+455 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:* |- * : @
+456 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:* |- A : *
+457 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:* |- * : @
+458 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:* |- A : *
+459 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:* |- not[(A)] : *
+460 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:* |- * : @
+461 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:* |- not[(A)] : *
+462 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:* |- not[(not[(A)])] : *
+463 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:* |- A : *
+464 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:* |- * : @
+465 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:* |- * : @
+466 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:* |- not[(not[(A)])] : *
+467 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:* |- A : *
+468 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:* |- implies[(not[(not[(A)])]),(A)] : *
+469 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16 ; A:* |- $a:(not[(not[(A)])]).(a6_fig11.16[(A),(a)]) : implies[(not[(not[(A)])]),(A)]
+470 contra, implies, a2_fig11.16, not, or, a3_fig11.16, exc_thrd, a4_fig11.16, a5_fig11.16, a6_fig11.16, doub_neg ;  |- * : @

@@ -1,4 +1,4 @@
-from functools import reduce
+import functools
 from dataclasses import dataclass
 from typing import Tuple
 
@@ -115,6 +115,10 @@ class Definition:
         # else:
         #     body = self.body.__str__()
         # return f"{self.context} |> {self.op} := {body} : {self.prop}"
+
+    @property
+    def names(self):
+        return map(lambda b: b[0], self.context.container)
 
 
 @dataclass(frozen=True)
@@ -339,8 +343,11 @@ def verify(inst: Instruction, book: list[Judgement]) -> list[Judgement]:
         if len(dfn.context.container) != len(premises):
             raise fmtErr_(inst, "arity mismatch")
         if not check_arity_type(dfn, premises):
+            # print(f"{dfn=}\n{premises=}")
             raise fmtErr_(inst, "arg type mismatch")
-        prop = dfn.prop  # TODO 代入
+        prop = functools.reduce(
+            lambda N, b: subst(N, b[1].proof, b[0]), zip(dfn.names, premises), dfn.prop
+        )
         _book = book.copy()
         _book.append(
             Judgement(
@@ -375,7 +382,18 @@ def verify(inst: Instruction, book: list[Judgement]) -> list[Judgement]:
 
 
 def check_arity_type(dfn: Definition, premises: list[Judgement]) -> bool:
-    print(f"TODO {__file__}: check_arity_type")
+    us = map(lambda pre: pre.proof, premises)
+    sbst = list(zip(dfn.names, us))
+    for i, pre in enumerate(premises):
+        pre_prop = pre.prop
+        a = functools.reduce(
+            lambda a, b: subst(a, b[1], b[0]),
+            sbst[:i],
+            dfn.context.container[i][1],  # A
+        )
+        if pre_prop != a:
+            print(f"{pre_prop=}\n{a=}")
+            return False
     return True
 
 
@@ -449,7 +467,7 @@ def beta_reduction(f: LambdaTerm, t: Term) -> Term:
 def delta_reduction(dfn: Definition, args: list[Term]) -> Term:
     if dfn.is_prim:
         raise NormalizationError("cannot reduce")
-    return reduce(
+    return functools.reduce(
         lambda body, sbst: subst(body, sbst[1], sbst[0]),
         zip(dfn.context.params(), args),
         dfn.body,
@@ -471,9 +489,10 @@ if __name__ == "__main__":
                 inst = scan_inst(line.replace("\n", ""))
                 book = verify(inst, book)
             return book
+
     # 今はまだ一瞬で終わる
     # import bench
     # print(f"{bench.repeat_sec(run, 10)} sec")
     book = run()
     for i, judgement in enumerate(book):
-        print(i, judgement.__str__())
+        print(i, judgement)

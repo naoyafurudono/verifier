@@ -140,7 +140,7 @@ def fmtErr_(inst: Instruction, msg: str) -> VerificationError:
     return VerificationError(f"at {inst.lnum}: {inst}\n{msg}")
 
 
-def verify(inst: Instruction, book: list[Judgement]) -> list[Judgement]:
+def check(inst: Instruction, book: list[Judgement]) -> list[Judgement]:
     if isinstance(inst, SortInst):
         _book = book.copy()
         _book.append(
@@ -487,7 +487,7 @@ if __name__ == "__main__":
             book: list[Judgement] = []
             for line in f.readlines():
                 inst = scan_inst(line.replace("\n", ""))
-                book = verify(inst, book)
+                book = check(inst, book)
             return book
 
     # 今はまだ一瞬で終わる

@@ -1,5 +1,16 @@
+import functools
 from fresh_name import Fresh
-from parse import AppTerm, ConstTerm, LambdaTerm, PiTerm, SortTerm, StarTerm, Term, UnExpectedTermError, VarTerm
+from parse import (
+    AppTerm,
+    ConstTerm,
+    LambdaTerm,
+    PiTerm,
+    SortTerm,
+    StarTerm,
+    Term,
+    UnExpectedTermError,
+    VarTerm,
+)
 
 
 def subst(t1: Term, t2: Term, name: str) -> Term:
@@ -31,6 +42,10 @@ def subst(t1: Term, t2: Term, name: str) -> Term:
     elif isinstance(t1, ConstTerm):
         return ConstTerm(t1.op, list(map(lambda tt: subst(tt, t2, name), t1.children)))
     return t1
+
+
+def subst_all(t: Term, names: list[str], terms: list[Term]) -> Term:
+    return functools.reduce(lambda t, b: subst(t, b[1], b[0]), zip(names, terms), t)
 
 
 def rename(t: Term, frm: str, to: str) -> Term:
@@ -69,11 +84,11 @@ if __name__ == "__main__":
 
     from parse import parse_term
 
-    apaser = argparse.ArgumentParser(prog='subst')
-    apaser.add_argument('filename')
+    apaser = argparse.ArgumentParser(prog="subst")
+    apaser.add_argument("filename")
     args = apaser.parse_args()
     filename = args.filename
-    with open(filename, 'r') as f:
+    with open(filename, "r") as f:
         code1 = f.readline()
         mo = re.match("[a-zA-Z]", f.readline())
         if not mo:
@@ -87,5 +102,5 @@ if __name__ == "__main__":
         term2 = parse_term(code2)
         print(subst(term1, term2, name))
     except (SyntaxError) as e:
-        print('syntax error')
+        print("syntax error")
         print(e)

@@ -44,6 +44,9 @@ class Context:
         lst.append((var, t))
         return Context(lst)
 
+    def get(self, name: str) -> Term | None:
+        return next((b[1] for b in self.container if b[0] == name), None)
+
     def __eq__(self, that):
         if self is that:
             return True
@@ -343,7 +346,6 @@ def check(inst: Instruction, book: list[Judgement]) -> list[Judgement]:
         if len(dfn.context.container) != len(premises):
             raise fmtErr_(inst, "arity mismatch")
         if not check_arity_type(dfn, premises):
-            # print(f"{dfn=}\n{premises=}")
             raise fmtErr_(inst, "arg type mismatch")
         prop = functools.reduce(
             lambda N, b: subst(N, b[1].proof, b[0]), zip(dfn.names, premises), dfn.prop

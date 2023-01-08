@@ -5,5 +5,9 @@
     "python.formatting.provider": "black",
     "[python]": {
         "editor.defaultFormatter": null
-    }
+    },
+    "cSpell.words": [
+        "Abst",
+        "Appl"
+    ]
 }

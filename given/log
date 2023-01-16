@@ -1,0 +1,19 @@
+0 sort
+1 cp 0
+2 var 1 A
+3 weak 1 1 A
+4 weak 0 1 A
+5 cp 4
+6 var 5 B
+7 weak 5 5 B
+8 weak 4 5 B
+9 sp 8 0
+10 var 9 a
+11 weak 8 9 a
+12 sp 11 1
+13 form 9 12
+14 cp 8
+15 cp 14
+16 conv 13 15
+17 def 0 16 implies
+-1

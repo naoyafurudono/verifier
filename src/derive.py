@@ -10,7 +10,8 @@ def, def-primに従ってデルタを拡張していく。
 
 from check import Context, Definition
 from inst import EndInst, Instruction
-from parse import SortTerm, StarTerm
+from parse import SortTerm, StarTerm, Term, VarTerm, parse_term
+import parse
 
 
 def prove_def(dfn: Definition, env: list[Definition]) -> list[Instruction]:
@@ -19,9 +20,18 @@ def prove_def(dfn: Definition, env: list[Definition]) -> list[Instruction]:
     return res
 
 
+class ParseError(Exception):
+    pass
+
+
+def fmtErr(msg: str) -> ParseError:
+    return ParseError(msg)
+
+
 def parse_script(lines: list[str]) -> Definition:
     """
-    lines はdef2から始まって、end2で終わる定義の列:
+    lines はdef2から始まって、edef2で終わる各行の文字列のリスト。
+    各文字列は改行を__含まない__
     ```
     def2
     n
@@ -36,8 +46,29 @@ def parse_script(lines: list[str]) -> Definition:
     edef2
     ```
     これをDefinitionに変換する
+    名前がcで、環境がx1:A1,...,xn:An、定義の本体がMでその型がNであるようなDefinition
     """
-    return Definition("dummy", Context([]), StarTerm(), SortTerm())
+    l = 0
+    if lines[l] != "def2" or lines[-1] != "edef2":
+        raise fmtErr("def2 or edf2 key words not found")
+    l += 1
+    arity = int(lines[l])
+    l += 1
+    binds: list[tuple[str, Term]] = []
+    for _ in range(arity):
+        binds.append((lines[l], parse_term(lines[l + 1])))
+        l += 2
+    op = lines[l]
+    l += 1
+    if lines[l] == "#":
+        M: Term = VarTerm("#")
+        prim_flag = True
+    else:
+        M = parse_term(lines[l])
+        prim_flag = False
+    l += 1
+    N = parse_term(lines[l])
+    return Definition(op, Context(binds), M, N, is_prim=prim_flag)
 
 
 if __name__ == "__main__":
@@ -53,14 +84,25 @@ if __name__ == "__main__":
     dfn_scripts: list[list[str]] = []
     dfn_script: list[str] = []
     for line in lines:
+        line = line[:-1]
         if line == "":
             dfn_scripts.append(dfn_script)
             dfn_script = []
         else:
             dfn_script.append(line)
-    dfns = list((parse_script(ds) for ds in dfn_scripts))
+    dfns = []
+    for ds in filter(lambda x: len(x) > 1, dfn_scripts):
+        try:
+            dfns.append(parse_script(ds))
+        except Exception as e:
+            import traceback
+
+            traceback.print_exc()
+            print(f"at: {ds=}")
+            exit(1)
     instructions: list[list[Instruction]] = []
     for i, dfn in enumerate(dfns):
+        print(dfn)
         insts = prove_def(dfn, dfns[:i])
         instructions.append(insts)
     instructions.append([EndInst(-1)])

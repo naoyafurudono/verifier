@@ -116,19 +116,21 @@ def parse_term(code: str) -> Term:
         t2 = parse_term(code2)
         return PiTerm(t1, t2, var)
     if is_const(code):
-        op_name = get_op_name(code)
-        fresh_code = code
+        op_name, fresh_code = divide_const(code)
+        # fresh_code = code
         code_list = []
         while True:
             code1, next_start = find_first_term(fresh_code)
             if next_start == 0:
-                if fresh_code[next_start] != "]":
+                if not fresh_code[next_start] in ["[", "]"]:
                     raise SyntaxError(
                         f"`{fresh_code}` {next_start} {fresh_code[next_start]}"
                     )
                 break
             if not fresh_code[next_start] in [",", "]"]:
-                raise SyntaxError(f"`{fresh_code}` {next_start}")
+                raise SyntaxError(
+                    f"`{fresh_code}` {next_start} {fresh_code[next_start]}"
+                )
             code_list.append(code1)
             fresh_code = fresh_code[next_start:]
         term_list = list(map(lambda code: parse_term(code), code_list))
@@ -139,8 +141,9 @@ def parse_term(code: str) -> Term:
 op_name_re = re.compile("([a-zA-Z0-9][a-zA-Z0-9_]+)\\[")
 
 
-def get_op_name(code: str):
-    return code.split("[")[0]
+def divide_const(code: str) -> Tuple[str, str]:
+    i = code.find("[")
+    return code[:i], code[i:]
 
 
 def find_first_term(code: str) -> Tuple[str, int]:
@@ -193,7 +196,7 @@ def is_type(code: str):
     return code[0] == "?"
 
 
-op_name_re = re.compile("^[a-zA-Z][a-zA-Z0-9_]*$")
+op_name_re = re.compile("^[a-zA-Z][a-zA-Z0-9_.]*$")  # 先生から頂いた例を受け入れるために`.`を許した
 
 
 def is_const(code: str):

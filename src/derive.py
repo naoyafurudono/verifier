@@ -70,6 +70,10 @@ def parse_script(lines: list[str]) -> Definition:
         prim_flag = False
     l += 1
     N = parse_term(lines[l])
+    l += 1
+    if lines[l] != "edef2" or l + 1 != len(lines):
+        raise fmtErr(f"internal error: bad end of definition {lines=} {l=} {lines[l]=}")
+
     return Definition(op, Context(binds), M, N, is_prim=prim_flag)
 
 

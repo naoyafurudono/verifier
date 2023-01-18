@@ -61,7 +61,9 @@ def parse_script(lines: list[str]) -> Definition:
     op = lines[l]
     l += 1
     if lines[l] == "#":
-        M: Term = VarTerm("#")
+        M: Term = VarTerm(
+            "# MESSAGE: this is not regular term, but a place holder for axiom"
+        )
         prim_flag = True
     else:
         M = parse_term(lines[l])

@@ -20,12 +20,12 @@ def prove_def(dfn: Definition, env: list[Definition]) -> list[Instruction]:
     return res
 
 
-class ParseError(Exception):
+class ParseDefinitionError(Exception):
     pass
 
 
-def fmtErr(msg: str) -> ParseError:
-    return ParseError(msg)
+def fmtErr(msg: str) -> ParseDefinitionError:
+    return ParseDefinitionError(msg)
 
 
 def parse_script(lines: list[str]) -> Definition:

@@ -30,7 +30,7 @@ class VarInst(Instruction):
 class WeakInst(Instruction):
     pre1: int
     pre2: int
-    var: VarTerm
+    var: str
 
 
 @dataclass(frozen=True)
@@ -123,29 +123,33 @@ def scan_inst(inst_code: str) -> Instruction:
             if not isinstance(mb_var, VarTerm):
                 raise __fmtErr(lnum, inst_code, "not a variable")
             else:
-                return WeakInst(lnum=lnum, pre1=int(
-                    tokens[2]), pre2=int(tokens[3]), var=mb_var)
+                return WeakInst(
+                    lnum=lnum, pre1=int(tokens[2]), pre2=int(tokens[3]), var=mb_var.name
+                )
         case "form":
-            return FormInst(lnum=lnum, pre1=int(
-                tokens[2]), pre2=int(tokens[3]))
+            return FormInst(lnum=lnum, pre1=int(tokens[2]), pre2=int(tokens[3]))
         case "appl":
-            return ApplInst(lnum=lnum, pre1=int(
-                tokens[2]), pre2=int(tokens[3]))
+            return ApplInst(lnum=lnum, pre1=int(tokens[2]), pre2=int(tokens[3]))
         case "abst":
-            return AbstInst(lnum=lnum, pre1=int(
-                tokens[2]), pre2=int(tokens[3]))
+            return AbstInst(lnum=lnum, pre1=int(tokens[2]), pre2=int(tokens[3]))
         case "def":
-            return DefInst(lnum=lnum, pre1=int(
-                tokens[2]), pre2=int(tokens[3]), op=tokens[4])
+            return DefInst(
+                lnum=lnum, pre1=int(tokens[2]), pre2=int(tokens[3]), op=tokens[4]
+            )
         case "defpr":
-            return DefPrInst(lnum=lnum, pre1=int(
-                tokens[2]), pre2=int(tokens[3]), op=tokens[4])
+            return DefPrInst(
+                lnum=lnum, pre1=int(tokens[2]), pre2=int(tokens[3]), op=tokens[4]
+            )
         case "inst":
-            return InstInst(lnum=lnum, pre=int(
-                tokens[2]), length=int(tokens[3]), pres=list(map(int, tokens[4:-1])), op_offset=int(tokens[-1]))
+            return InstInst(
+                lnum=lnum,
+                pre=int(tokens[2]),
+                length=int(tokens[3]),
+                pres=list(map(int, tokens[4:-1])),
+                op_offset=int(tokens[-1]),
+            )
         case "conv":
-            return ConvInst(lnum=lnum, pre1=int(
-                tokens[2]), pre2=int(tokens[3]))
+            return ConvInst(lnum=lnum, pre1=int(tokens[2]), pre2=int(tokens[3]))
         case "cp":
             return CPInst(lnum=lnum, target=int(tokens[2]))
         case "sp":

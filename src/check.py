@@ -39,13 +39,31 @@ from inst import (
 class Context:
     container: list[Tuple[str, Term]]
 
-    def extend(self, var, t):
+    def extend(self, var: str, t: Term):
         lst = self.container.copy()
         lst.append((var, t))
         return Context(lst)
 
     def get(self, name: str) -> Term | None:
         return next((b[1] for b in self.container if b[0] == name), None)
+
+    @property
+    def size(self):
+        return len(self.container)
+
+    @property
+    def is_empty(self) -> bool:
+        return len(self.container) == 0
+
+    def get_last(self) -> Tuple[str, Term] | None:
+        if self.is_empty:
+            return None
+        return self.container[-1]
+
+    def get_ahead(self):
+        if self.is_empty:
+            return None
+        return Context(self.container[:-1])
 
     def __eq__(self, that):
         if self is that:
@@ -171,7 +189,7 @@ def check(inst: Instruction, book: list[Judgement]) -> list[Judgement]:
     elif isinstance(inst, WeakInst):
         premise1 = book[inst.pre1]
         premise2 = book[inst.pre2]
-        new_name = inst.var.name
+        new_name = inst.var
         if premise1.environment != premise2.environment:
             raise fmtErr_(inst, "environments are not agree")
         if premise1.context != premise2.context:
@@ -423,7 +441,7 @@ def fmtErrN_(t: Term, env: list[Definition], msg: str):
     return NormalizationError(f"{t}:\n  {msg}")
 
 
-def bd_eqv(t1: Term, t2: Term, env) -> bool:
+def bd_eqv(t1: Term, t2: Term, env: list[Definition]) -> bool:
     n1 = normalize(t1, env)
     n2 = normalize(t2, env)
     return alpha_eqv(n1, n2)

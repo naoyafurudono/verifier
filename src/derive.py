@@ -8,16 +8,137 @@ def, def-primに従ってデルタを拡張していく。
 そうすると、最終的なデルタを得たときにそこまでの導出木を生成しやすい。
 """
 
-from check import Context, Definition
-from inst import EndInst, Instruction
-from parse import SortTerm, StarTerm, Term, VarTerm, parse_term
-import parse
+from typing import Tuple
+from check import Context, Definition, bd_eqv
+from inst import AbstInst, ApplInst, EndInst, Instruction, VarInst, WeakInst
+from parse import (
+    AppTerm,
+    LambdaTerm,
+    PiTerm,
+    SortTerm,
+    StarTerm,
+    Term,
+    VarTerm,
+    parse_term,
+)
+from subst import subst
 
 
-def prove_def(dfn: Definition, env: list[Definition]) -> list[Instruction]:
+class DeriveError(Exception):
+    pass
+
+
+def fmtDeriveError(msg: str, term: Term) -> DeriveError:
+    return DeriveError(f"{msg}\nterm: {term}")
+
+
+def prove_def(dfn: Definition, env: list[Definition], index: int) -> list[Instruction]:
     # 単一の定義と、環境を受け取って定義本体の導出木を生成するinstの列を返す
-    res: list[Instruction] = []
-    return res
+    # 返すinstの行番号はindexからつけ始める
+    insts, prop, _next_index = prove_term(env, dfn.context, dfn.body, index, index - 1)
+    if not check_abd_eqv(prop, dfn.prop, env):
+        raise fmtDeriveError("fail to derive expected property", dfn.prop)
+    return insts
+
+
+def check_abd_eqv(t1: Term, t2: Term, env: list[Definition]) -> bool:
+    return t1 == t2 or bd_eqv(t1, t2, env)
+
+
+def prove_term(
+    env: list[Definition],
+    ctx: Context,
+    t: Term,
+    current_index: int,
+    index_for_sort: int,
+) -> Tuple[list[Instruction], Term, int]:
+    # 返すのは
+    #   証明列、示した命題、次に使えるインデックス
+    if isinstance(t, SortTerm):
+        raise fmtDeriveError("sort cannot be typed", t)
+    if isinstance(t, StarTerm):
+        # 1. weak を無限に呼んで環境を空にする。
+        # 2. このdefinitionの直前のinstとつなげる。
+        # 以上を下から順番に行うと、ほしいinstの列を構成できる
+        if len(ctx.container) == 0:
+            raise fmtDeriveError("internal", t)
+        if len(ctx.container) == 1:
+            mb_tuple = ctx.get_last()
+            if not mb_tuple:
+                raise fmtDeriveError("internal", t)
+            name, tp = mb_tuple
+            head = ctx.get_ahead()
+            if not head:
+                raise fmtDeriveError("internal", t)
+            else:
+                # use (weak)
+                insts, prop, next_index = prove_term(
+                    env, head, tp, current_index, index_for_sort
+                )
+                insts.append(
+                    WeakInst(current_index, index_for_sort, next_index - 1, name)
+                )
+                return insts, prop, next_index + 1
+    if isinstance(t, VarTerm):
+        mb_tuple = ctx.get_last()
+        if not mb_tuple:
+            raise fmtDeriveError("no binding found", t)
+        name, tp = mb_tuple
+        if name != t.name:
+            # use (weak)
+            head = ctx.get_ahead()
+            if not head:
+                raise fmtDeriveError("ctx too short", t)
+            insts, prop, next_index = prove_term(
+                env, head, t, current_index, index_for_sort
+            )
+            insts.append(WeakInst(current_index, index_for_sort, next_index - 1, name))
+            return insts, prop, next_index + 1
+        else:
+            mb_ctx = ctx.get_ahead()
+            if not mb_ctx:
+                raise fmtDeriveError("empty ctx", t)
+            else:
+                insts, prop, next_index = prove_term(
+                    env, mb_ctx, tp, current_index, index_for_sort
+                )
+                insts.append(VarInst(next_index, next_index - 1, t))
+                return insts, prop, next_index + 1
+    if isinstance(t, AppTerm):
+        insts1, prop1, next_index1 = prove_term(
+            env, ctx, t.t1, current_index, index_for_sort
+        )
+        insts2, prop2, next_index2 = prove_term(
+            env, ctx, t.t2, next_index1, index_for_sort
+        )
+        if not isinstance(prop1, PiTerm):
+            raise fmtDeriveError("must have Pi term", t.t1)
+        else:
+            # TODO: bd/同値を使った場合にconvを追加する
+            if not check_abd_eqv(prop1.t1, prop2, env):
+                raise fmtDeriveError("fail to check eqv", t)
+            insts1.extend(insts2)
+            insts1.append(ApplInst(next_index2, next_index1 - 1, next_index2 - 1))
+            return insts1, subst(prop1.t2, t.t2, prop1.name), next_index2 + 1
+    if isinstance(t, LambdaTerm):
+        insts1, prop1, next_index1 = prove_term(
+            env, ctx.extend(t.name, t.t1), t.t2, current_index, index_for_sort
+        )
+        prop = PiTerm(t.t1, prop1, t.name)
+        insts2, prop2, next_index2 = prove_term(
+            env, ctx, prop, next_index1, index_for_sort
+        )
+        if not is_s(prop2):
+            raise fmtDeriveError("must be a sort", prop2)
+        insts1.extend(insts2)
+        insts1.append(AbstInst(next_index2, next_index1 - 1, next_index2 - 1))
+        return insts1, prop, next_index2 + 1
+    else:
+        raise Exception(f"TODO {t}\n not defined yet")
+
+
+def is_s(t: Term) -> bool:
+    return isinstance(t, SortTerm) or isinstance(t, StarTerm)
 
 
 class ParseDefinitionError(Exception):
@@ -107,10 +228,12 @@ if __name__ == "__main__":
             print(f"at: {ds=}")
             exit(1)
     instructions: list[list[Instruction]] = []
+    instruction_index = 0
     for i, dfn in enumerate(dfns):
         print(dfn)
-        insts = prove_def(dfn, dfns[:i])
+        insts = prove_def(dfn, dfns[:i], instruction_index)
         instructions.append(insts)
+        instruction_index += len(insts)
     instructions.append([EndInst(-1)])
     for insts in instructions:
         for inst in insts:

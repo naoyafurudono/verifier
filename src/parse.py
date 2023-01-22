@@ -118,7 +118,7 @@ def parse_term(code: str) -> Term:
     if is_const(code):
         op_name, fresh_code = divide_const(code)
         # fresh_code = code
-        code_list = []
+        code_list: list[str] = []
         while True:
             code1, next_start = find_first_term(fresh_code)
             if next_start == 0:

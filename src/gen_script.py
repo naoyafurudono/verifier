@@ -1,7 +1,7 @@
 from inst import EndInst, Instruction, SortInst
 from typing import Generator
 from check import Context, Definition
-from parse import StarTerm, Term, VarTerm
+from parse import StarTerm, Term
 
 
 def run(

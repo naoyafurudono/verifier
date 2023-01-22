@@ -101,7 +101,7 @@ class Context:
         )
 
     def params(self) -> list[str]:
-        def fst(d):
+        def fst(d: Tuple[str, Term]) -> str:
             return d[0]
 
         return list(map(fst, self.container))
@@ -194,7 +194,7 @@ def check(inst: Instruction, book: list[Judgement]) -> list[Judgement]:
             raise fmtErr_(inst, "environments are not agree")
         if premise1.context != premise2.context:
             raise fmtErr_(inst, "contexts are not agree")
-        if new_name in premise1.context.container:
+        if new_name in premise1.context.params():
             raise fmtErr_(inst, f"variable {new_name} is already used in the context")
         _book = book.copy()
         _book.append(

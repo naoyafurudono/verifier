@@ -37,15 +37,20 @@ def prove_def(dfn: Definition, env: list[Definition], index: int) -> list[Instru
     # 単一の定義と、環境を受け取って定義本体の導出木を生成するinstの列を返す
     # 返すinstの行番号はindexからつけ始める
     if dfn.is_prim:
-        insts, prop, next_index = prove_term(env, dfn.context, dfn.prop, index, index - 1)
-        if not is_s(prop): raise fmtDeriveError("must be sort for prim def", dfn.prop)
-        insts.append(DefInst(next_index, index-1, next_index-1,dfn.op))
+        insts, prop, next_index = prove_term(
+            env, dfn.context, dfn.prop, index, index - 1
+        )
+        if not is_s(prop):
+            raise fmtDeriveError("must be sort for prim def", dfn.prop)
+        insts.append(DefInst(next_index, index - 1, next_index - 1, dfn.op))
         return insts
     else:
-        insts, prop, next_index = prove_term(env, dfn.context, dfn.body, index, index - 1)
+        insts, prop, next_index = prove_term(
+            env, dfn.context, dfn.body, index, index - 1
+        )
         if not check_abd_eqv(prop, dfn.prop, env):
             raise fmtDeriveError("fail to derive expected property", dfn.prop)
-        insts.append(DefInst(next_index, index-1, next_index-1,dfn.op))
+        insts.append(DefInst(next_index, index - 1, next_index - 1, dfn.op))
         return insts
 
 
@@ -193,20 +198,20 @@ def parse_script(lines: list[str]) -> Definition:
     op = lines[l]
     l += 1
     if lines[l] == "#":
-        M: Term = VarTerm(
+        m: Term = VarTerm(
             "# MESSAGE: this is not regular term, but a place holder for axiom"
         )
         prim_flag = True
     else:
-        M = parse_term(lines[l])
+        m = parse_term(lines[l])
         prim_flag = False
     l += 1
-    N = parse_term(lines[l])
+    n = parse_term(lines[l])
     l += 1
     if lines[l] != "edef2" or l + 1 != len(lines):
         raise fmtErr(f"internal error: bad end of definition {lines=} {l=} {lines[l]=}")
 
-    return Definition(op, Context(binds), M, N, is_prim=prim_flag)
+    return Definition(op, Context(binds), m, n, is_prim=prim_flag)
 
 
 if __name__ == "__main__":
@@ -228,7 +233,7 @@ if __name__ == "__main__":
             dfn_script = []
         else:
             dfn_script.append(line)
-    dfns = []
+    dfns: list[Definition] = []
     for ds in filter(lambda x: len(x) > 1, dfn_scripts):
         try:
             dfns.append(parse_script(ds))

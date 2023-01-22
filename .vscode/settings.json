@@ -1,7 +1,7 @@
 {
     "python.linting.mypyEnabled": true,
     "python.linting.enabled": true,
-    "python.analysis.typeCheckingMode": "basic",
+    "python.analysis.typeCheckingMode": "strict",
     "python.formatting.provider": "black",
     "[python]": {
         "editor.defaultFormatter": null

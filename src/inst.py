@@ -1,7 +1,6 @@
 from dataclasses import dataclass
-from typing import Tuple
 
-from parse import Term, VarTerm, parse_term
+from parse import VarTerm, parse_term
 
 
 @dataclass(frozen=True)
@@ -154,4 +153,5 @@ def scan_inst(inst_code: str) -> Instruction:
             return CPInst(lnum=lnum, target=int(tokens[2]))
         case "sp":
             return SPInst(lnum=lnum, target=int(tokens[2]), bind=int(tokens[3]))
-    raise __fmtErr(lnum, inst_code, "no inst matched")
+        case _:
+            raise __fmtErr(lnum, inst_code, "no inst matched")

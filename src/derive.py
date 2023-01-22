@@ -134,6 +134,11 @@ def prove_term(
         insts1.append(AbstInst(next_index2, next_index1 - 1, next_index2 - 1))
         return insts1, prop, next_index2 + 1
     else:
+        """
+        あとはconstとPi
+        それ以外にbd/同値でのconvの使用がまだ。他にもやり残しがあるかも
+        main周りになにか仕事が残っていそう。
+        """
         raise Exception(f"TODO {t}\n not defined yet")
 
 

@@ -10,9 +10,10 @@ def, def-primに従ってデルタを拡張していく。
 
 from typing import Tuple
 from check import Context, Definition, bd_eqv
-from inst import AbstInst, ApplInst, EndInst, Instruction, VarInst, WeakInst
+from inst import AbstInst, ApplInst, DefInst, EndInst, Instruction, VarInst, WeakInst
 from parse import (
     AppTerm,
+    ConstTerm,
     LambdaTerm,
     PiTerm,
     SortTerm,
@@ -35,10 +36,17 @@ def fmtDeriveError(msg: str, term: Term) -> DeriveError:
 def prove_def(dfn: Definition, env: list[Definition], index: int) -> list[Instruction]:
     # 単一の定義と、環境を受け取って定義本体の導出木を生成するinstの列を返す
     # 返すinstの行番号はindexからつけ始める
-    insts, prop, _next_index = prove_term(env, dfn.context, dfn.body, index, index - 1)
-    if not check_abd_eqv(prop, dfn.prop, env):
-        raise fmtDeriveError("fail to derive expected property", dfn.prop)
-    return insts
+    if dfn.is_prim:
+        insts, prop, next_index = prove_term(env, dfn.context, dfn.prop, index, index - 1)
+        if not is_s(prop): raise fmtDeriveError("must be sort for prim def", dfn.prop)
+        insts.append(DefInst(next_index, index-1, next_index-1,dfn.op))
+        return insts
+    else:
+        insts, prop, next_index = prove_term(env, dfn.context, dfn.body, index, index - 1)
+        if not check_abd_eqv(prop, dfn.prop, env):
+            raise fmtDeriveError("fail to derive expected property", dfn.prop)
+        insts.append(DefInst(next_index, index-1, next_index-1,dfn.op))
+        return insts
 
 
 def check_abd_eqv(t1: Term, t2: Term, env: list[Definition]) -> bool:
@@ -133,13 +141,11 @@ def prove_term(
         insts1.extend(insts2)
         insts1.append(AbstInst(next_index2, next_index1 - 1, next_index2 - 1))
         return insts1, prop, next_index2 + 1
-    else:
-        """
-        あとはconstとPi
-        それ以外にbd/同値でのconvの使用がまだ。他にもやり残しがあるかも
-        main周りになにか仕事が残っていそう。
-        """
+    if isinstance(t, ConstTerm):
         raise Exception(f"TODO {t}\n not defined yet")
+    if isinstance(t, PiTerm):
+        raise Exception(f"TODO {t}\n not defined yet")
+    raise Exception(f"forget to implement {t}\n not defined yet")
 
 
 def is_s(t: Term) -> bool:

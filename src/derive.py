@@ -127,9 +127,9 @@ def prove_term(
         if not isinstance(prop1, PiTerm):
             raise fmtDeriveError("must have Pi term", t.t1)
         else:
-            # TODO: bd/同値を使った場合にconvを追加する
             if not check_abd_eqv(prop1.t1, prop2, env):
                 raise fmtDeriveError("fail to check eqv", t)
+            raise fmtDeriveError("# TODO: bd/同値を使った場合にconvを追加する", t)
             insts1.extend(insts2)
             insts1.append(ApplInst(next_index2, next_index1 - 1, next_index2 - 1))
             return insts1, subst(prop1.t2, t.t2, prop1.name), next_index2 + 1
@@ -217,7 +217,7 @@ def parse_script(lines: list[str]) -> Definition:
 if __name__ == "__main__":
     import argparse
 
-    apaser = argparse.ArgumentParser(prog="20221212")
+    apaser = argparse.ArgumentParser(prog="automake")
     apaser.add_argument("filename")
     args = apaser.parse_args()
     filename = args.filename

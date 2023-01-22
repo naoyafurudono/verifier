@@ -10,6 +10,7 @@
         "Abst",
         "Appl",
         "dfns",
+        "edef",
         "insts"
     ]
 }

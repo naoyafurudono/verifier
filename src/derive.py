@@ -49,18 +49,18 @@ def fmtDeriveError(msg: str, term: Term) -> DeriveError:
 def prove_def(dfn: Definition, env: list[Definition], insts: list[Instruction]):
     # 単一の定義と、環境を受け取って定義本体の導出木を生成するinstの列を返す
     # 返すinstの行番号はindexからつけ始める
-    initial = len(insts) - 1
+    index_for_sort = len(insts) - 1
     if dfn.is_prim:
-        prop, pr_index = prove_term(env, dfn.context, dfn.prop, insts, initial)
+        prop, pr_index = prove_term(env, dfn.context, dfn.prop, insts, index_for_sort)
         if not is_s(prop):
             raise fmtDeriveError("must be sort for prim def", dfn.prop)
-        insts.append(DefInst(len(insts), initial, pr_index, dfn.op))
+        insts.append(DefInst(len(insts), index_for_sort, pr_index, dfn.op))
     else:
-        prop, pr_index = prove_term(env, dfn.context, dfn.body, insts, initial)
+        prop, pr_index = prove_term(env, dfn.context, dfn.body, insts, index_for_sort)
         if not check_abd_eqv(prop, dfn.prop, env):
             print(f"{prop=}\n{dfn=}", file=sys.stderr)
             raise fmtDeriveError("fail to derive expected property", dfn.prop)
-        insts.append(DefInst(len(insts), initial, pr_index, dfn.op))
+        insts.append(DefInst(len(insts), index_for_sort, pr_index, dfn.op))
 
 
 def check_abd_eqv(t1: Term, t2: Term, env: list[Definition]) -> bool:

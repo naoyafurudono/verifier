@@ -136,14 +136,14 @@ class Definition:
         )
 
     def __str__(self) -> str:
-        return self.op
+        # return self.op
 
         # 定義の中身を載せるとうるさすぎる
-        # if self.is_prim:
-        #     body = "⊥"
-        # else:
-        #     body = self.body.__str__()
-        # return f"{self.context} |> {self.op} := {body} : {self.prop}"
+        if self.is_prim:
+            body = "⊥"
+        else:
+            body = self.body.__str__()
+        return f"{self.context} |> {self.op} := {body} : {self.prop}"
 
     @property
     def names(self):

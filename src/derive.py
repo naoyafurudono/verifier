@@ -59,7 +59,8 @@ def prove_def(dfn: Definition, env: list[Definition], index: int) -> list[Instru
             env, dfn.context, dfn.body, index, index - 1
         )
         if not check_abd_eqv(prop, dfn.prop, env):
-            print(f"{prop=}\n{dfn=}")
+            # print(f"{prop=}\n{dfn=}")
+            print(f"dfn: {dfn}\nprop: {prop}")
             raise fmtDeriveError("fail to derive expected property", dfn.prop)
         insts.append(DefInst(next_index, index - 1, pr_index, dfn.op))
         return insts
@@ -69,6 +70,8 @@ def check_abd_eqv(t1: Term, t2: Term, env: list[Definition]) -> bool:
     return t1 == t2 or bd_eqv(t1, t2, env)
 
 
+
+
 def prove_term(
     env: list[Definition],
     ctx: Context,
@@ -76,6 +79,8 @@ def prove_term(
     current_index: int,
     index_for_sort: int,
 ) -> Tuple[list[Instruction], Term, int, int]:
+    global tpsss
+    tpsss.add(type(t))
     # 返すのは
     #   証明列、示した命題、命題を示したインデックス、次に使えるインデックス
     if isinstance(t, SortTerm):
@@ -138,7 +143,6 @@ def prove_term(
         )
         n1 = normalize(prop1, env)
         if not isinstance(n1, PiTerm):
-            print(f"{prop1=}")
             raise fmtDeriveError("must have Pi term", t.t1)
         else:
             if not check_abd_eqv(n1.t1, prop2, env):
@@ -157,6 +161,7 @@ def prove_term(
             env, ctx.extend(t.name, t.t1), t.t2, current_index, index_for_sort
         )
         prop = PiTerm(t.t1, prop1, t.name)
+        print(f"prop Pi: {prop}")
         insts2, prop2, pr_index2, next_index2 = prove_term(
             env, ctx, prop, next_index1, index_for_sort
         )
@@ -182,7 +187,6 @@ def prove_term(
             )
             pres.append(pr_index_u)
             insts.extend(insts_u)
-            # TODO: check the type
             if not check_abd_eqv(
                 prop_u, subst_all(tps[i], names[:i], t.children[:i]), env
             ):
@@ -200,6 +204,8 @@ def prove_term(
         insts2, prop2, pr_index2, next_index2 = prove_term(
             env, ctx.extend(t.name, t.t1), t.t2, next_index1, index_for_sort
         )
+        if not is_s(prop2):
+            raise fmtDeriveError("must be a sort", t.t2)
         insts1.extend(insts2)
         insts1.append(FormInst(next_index2, pr_index1, pr_index2))
         return insts1, prop2, next_index2, next_index2 + 1
@@ -299,8 +305,14 @@ if __name__ == "__main__":
     instructions: list[list[Instruction]] = []
     instruction_index = 0
     for i, dfn in enumerate(dfns):
-        print(dfn)
-        insts = prove_def(dfn, dfns[:i], instruction_index)
+        print()
+        try:
+            tpsss = set()
+            insts = prove_def(dfn, dfns[:i], instruction_index)
+            print(tpsss)
+        except Exception as e:
+            print(tpsss)
+            raise e
         instructions.append(insts)
         instruction_index += len(insts)
     instructions.append([EndInst(-1)])

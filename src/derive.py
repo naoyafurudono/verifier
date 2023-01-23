@@ -9,13 +9,14 @@ def, def-primに従ってデルタを拡張していく。
 """
 
 from typing import Tuple
-from check import Context, Definition, bd_eqv
+from check import Context, Definition, bd_eqv, normalize
 from inst import (
     AbstInst,
     ApplInst,
     DefInst,
     EndInst,
     FormInst,
+    InstInst,
     Instruction,
     VarInst,
     WeakInst,
@@ -31,7 +32,7 @@ from parse import (
     VarTerm,
     parse_term,
 )
-from subst import subst
+from subst import subst, subst_all
 
 
 class DeriveError(Exception):
@@ -58,7 +59,7 @@ def prove_def(dfn: Definition, env: list[Definition], index: int) -> list[Instru
             env, dfn.context, dfn.body, index, index - 1
         )
         if not check_abd_eqv(prop, dfn.prop, env):
-            print(f"{prop=} {dfn=}")
+            print(f"{prop=}\n{dfn=}")
             raise fmtDeriveError("fail to derive expected property", dfn.prop)
         insts.append(DefInst(next_index, index - 1, pr_index, dfn.op))
         return insts
@@ -98,7 +99,7 @@ def prove_term(
             )
             insts1.extend(insts2)
             insts1.append(WeakInst(next_index2, pr_index1, pr_index2, name))
-            return insts1, prop1, next_index2, next_index2+1
+            return insts1, prop1, next_index2, next_index2 + 1
     if isinstance(t, VarTerm):
         mb_tuple = ctx.get_last()
         if not mb_tuple:
@@ -113,11 +114,11 @@ def prove_term(
                 env, head, t, current_index, index_for_sort
             )
             insts2, prop2, pr_index2, next_index2 = prove_term(
-                env, head, tp, next_index1,index_for_sort
+                env, head, tp, next_index1, index_for_sort
             )
             insts1.extend(insts2)
             insts1.append(WeakInst(next_index2, pr_index1, pr_index2, name))
-            return insts1, prop1, next_index2, next_index2+1
+            return insts1, prop1, next_index2, next_index2 + 1
         else:
             mb_ctx = ctx.get_ahead()
             if not mb_ctx:
@@ -135,15 +136,22 @@ def prove_term(
         insts2, prop2, pr_index2, next_index2 = prove_term(
             env, ctx, t.t2, next_index1, index_for_sort
         )
-        if not isinstance(prop1, PiTerm):
+        n1 = normalize(prop1, env)
+        if not isinstance(n1, PiTerm):
+            print(f"{prop1=}")
             raise fmtDeriveError("must have Pi term", t.t1)
         else:
-            if not check_abd_eqv(prop1.t1, prop2, env):
+            if not check_abd_eqv(n1.t1, prop2, env):
                 raise fmtDeriveError("fail to check eqv", t)
             # raise fmtDeriveError("# TODO: bd/同値を使った場合にconvを追加する", t)
             insts1.extend(insts2)
             insts1.append(ApplInst(next_index2, pr_index1, pr_index2))
-            return insts1, subst(prop1.t2, t.t2, prop1.name), next_index2, next_index2 + 1
+            return (
+                insts1,
+                subst(n1.t2, t.t2, n1.name),
+                next_index2,
+                next_index2 + 1,
+            )
     if isinstance(t, LambdaTerm):
         insts1, prop1, pr_index1, next_index1 = prove_term(
             env, ctx.extend(t.name, t.t1), t.t2, current_index, index_for_sort
@@ -158,7 +166,31 @@ def prove_term(
         insts1.append(AbstInst(next_index2, pr_index1, pr_index2))
         return insts1, prop, next_index2, next_index2 + 1
     if isinstance(t, ConstTerm):
-        raise Exception(f"TODO {t}\n not defined yet")
+        insts1, prop1, pr_index1, next_index1 = prove_term(
+            env, ctx, StarTerm(), current_index, index_for_sort
+        )
+        if not isinstance(prop1, SortTerm):
+            raise fmtDeriveError("must be sort", prop1)
+        dfn_i, dfn = next((i, dfn) for (i, dfn) in enumerate(env) if dfn.op == t.op)
+        next_index_u = next_index1
+        pres: list[int] = []
+        insts: list[Instruction] = []
+        names, tps = dfn.context.names_tps()
+        for i, u in enumerate(t.children):
+            insts_u, prop_u, pr_index_u, next_index_u = prove_term(
+                env, ctx, u, next_index_u, index_for_sort
+            )
+            pres.append(pr_index_u)
+            insts.extend(insts_u)
+            # TODO: check the type
+            if not check_abd_eqv(
+                prop_u, subst_all(tps[i], names[:i], t.children[:i]), env
+            ):
+                raise fmtDeriveError("type not matched", t)
+        insts.append(
+            InstInst(next_index_u, pr_index1, len(dfn.context.container), pres, dfn_i)
+        )
+        return insts, subst_all(dfn.prop, names, tps), next_index_u, next_index_u + 1
     if isinstance(t, PiTerm):
         insts1, prop1, pr_index1, next_index1 = prove_term(
             env, ctx, t.t1, current_index, index_for_sort
@@ -170,7 +202,7 @@ def prove_term(
         )
         insts1.extend(insts2)
         insts1.append(FormInst(next_index2, pr_index1, pr_index2))
-        return insts1, prop2, next_index2, next_index2+1
+        return insts1, prop2, next_index2, next_index2 + 1
     raise Exception(f"forget to implement {t}\n not defined yet")
 
 

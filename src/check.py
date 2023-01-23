@@ -106,6 +106,14 @@ class Context:
 
         return list(map(fst, self.container))
 
+    def names_tps(self) -> Tuple[list[str], list[Term]]:
+        names: list[str] = []
+        tps: list[Term] = []
+        for b in self.container:
+            names.append(b[0])
+            tps.append(b[1])
+        return names, tps
+
 
 @dataclass(frozen=True)
 class Definition:

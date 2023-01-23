@@ -44,26 +44,24 @@ def fmtDeriveError(msg: str, term: Term) -> DeriveError:
     return DeriveError(f"{msg}\nterm: {term}")
 
 
-def prove_def(dfn: Definition, env: list[Definition], index: int) -> list[Instruction]:
+def prove_def(
+    dfn: Definition, env: list[Definition], insts: list[Instruction]
+) -> list[Instruction]:
     # 単一の定義と、環境を受け取って定義本体の導出木を生成するinstの列を返す
     # 返すinstの行番号はindexからつけ始める
+    initial = len(insts) - 1
     if dfn.is_prim:
-        insts, prop, pr_index, next_index = prove_term(
-            env, dfn.context, dfn.prop, index, index - 1
-        )
+        insts, prop, pr_index = prove_term(env, dfn.context, dfn.prop, insts, initial)
         if not is_s(prop):
             raise fmtDeriveError("must be sort for prim def", dfn.prop)
-        insts.append(DefInst(next_index, index - 1, pr_index, dfn.op))
+        insts.append(DefInst(len(insts), initial, pr_index, dfn.op))
         return insts
     else:
-        insts, prop, pr_index, next_index = prove_term(
-            env, dfn.context, dfn.body, index, index - 1
-        )
+        insts, prop, pr_index = prove_term(env, dfn.context, dfn.body, insts, initial)
         if not check_abd_eqv(prop, dfn.prop, env):
             # print(f"{prop=}\n{dfn=}")
-            print(f"dfn: {dfn}\nprop: {prop}")
             raise fmtDeriveError("fail to derive expected property", dfn.prop)
-        insts.append(DefInst(next_index, index - 1, pr_index, dfn.op))
+        insts.append(DefInst(len(insts), initial, pr_index, dfn.op))
         return insts
 
 
@@ -71,24 +69,25 @@ def check_abd_eqv(t1: Term, t2: Term, env: list[Definition]) -> bool:
     return t1 == t2 or bd_eqv(t1, t2, env)
 
 
+def assert_index(insts: list[Instruction], base: int, actual: int):
+    if not base + len(insts) == actual:
+        raise Exception(f"insts len: {len(insts)}\n{base=}\n{actual=}")
+
+
 def prove_term(
     env: list[Definition],
     ctx: Context,
     t: Term,
-    current_index: int,
+    insts: list[Instruction],
     index_for_sort: int,
-) -> Tuple[list[Instruction], Term, int, int]:
-    if 24 <= current_index <= 26:
-        print(f"{current_index=} {t}")
-    global tpsss
-    tpsss.add(type(t))
+) -> Tuple[list[Instruction], Term, int]:
     # 返すのは
-    #   証明列、示した命題、命題を示したインデックス、次に使えるインデックス
+    #   証明列、示した命題、命題を示したインデックス
     if isinstance(t, SortTerm):
         raise fmtDeriveError("sort cannot be typed", t)
     if isinstance(t, StarTerm):
         if ctx.is_empty:
-            return [], SortTerm(), index_for_sort, current_index
+            return insts, SortTerm(), index_for_sort
         else:
             mb_tuple = ctx.get_last()
             if not mb_tuple:
@@ -97,15 +96,10 @@ def prove_term(
             head = ctx.get_ahead()
             if not head:
                 raise fmtDeriveError("internal", t)
-            insts1, prop1, pr_index1, next_index1 = prove_term(
-                env, head, t, current_index, index_for_sort
-            )
-            insts2, prop2, pr_index2, next_index2 = prove_term(
-                env, head, tp, next_index1, index_for_sort
-            )
-            insts1.extend(insts2)
-            insts1.append(WeakInst(next_index2, pr_index1, pr_index2, name))
-            return insts1, prop1, next_index2, next_index2 + 1
+            insts, prop1, pr_index1 = prove_term(env, head, t, insts, index_for_sort)
+            insts, prop2, pr_index2 = prove_term(env, head, tp, insts, index_for_sort)
+            insts.append(WeakInst(len(insts), pr_index1, pr_index2, name))
+            return insts, prop1, len(insts) - 1
     if isinstance(t, VarTerm):
         mb_tuple = ctx.get_last()
         if not mb_tuple:
@@ -116,101 +110,74 @@ def prove_term(
             head = ctx.get_ahead()
             if not head:
                 raise fmtDeriveError("ctx too short", t)
-            insts1, prop1, pr_index1, next_index1 = prove_term(
-                env, head, t, current_index, index_for_sort
-            )
-            insts2, prop2, pr_index2, next_index2 = prove_term(
-                env, head, tp, next_index1, index_for_sort
-            )
-            insts1.extend(insts2)
-            insts1.append(WeakInst(next_index2, pr_index1, pr_index2, name))
-            return insts1, prop1, next_index2, next_index2 + 1
+            insts, prop1, pr_index1 = prove_term(env, head, t, insts, index_for_sort)
+            insts, prop2, pr_index2 = prove_term(env, head, tp, insts, index_for_sort)
+            insts.append(WeakInst(len(insts), pr_index1, pr_index2, name))
+            return insts, prop1, len(insts) - 1
         else:
             mb_ctx = ctx.get_ahead()
             if not mb_ctx:
                 raise fmtDeriveError("empty ctx", t)
             else:
-                insts, prop, pr_index, next_index = prove_term(
-                    env, mb_ctx, tp, current_index, index_for_sort
+                insts, prop, pr_index = prove_term(
+                    env, mb_ctx, tp, insts, index_for_sort
                 )
-                insts.append(VarInst(next_index, pr_index, t))
-                return insts, tp, next_index, next_index + 1
+                insts.append(VarInst(len(insts), pr_index, t))
+                return insts, tp, len(insts) - 1
     if isinstance(t, AppTerm):
-        insts1, prop1, pr_index1, next_index1 = prove_term(
-            env, ctx, t.t1, current_index, index_for_sort
-        )
-        insts2, prop2, pr_index2, next_index2 = prove_term(
-            env, ctx, t.t2, next_index1, index_for_sort
-        )
+        insts, prop1, pr_index1 = prove_term(env, ctx, t.t1, insts, index_for_sort)
+        insts, prop2, pr_index2 = prove_term(env, ctx, t.t2, insts, index_for_sort)
         n1 = normalize(prop1, env)
+        print("TODO use conv rule")
         if not isinstance(n1, PiTerm):
             raise fmtDeriveError("must have Pi term", t.t1)
         else:
             if not check_abd_eqv(n1.t1, prop2, env):
                 raise fmtDeriveError("fail to check eqv", t)
-            # raise fmtDeriveError("# TODO: bd/同値を使った場合にconvを追加する", t)
-            insts1.extend(insts2)
-            insts1.append(ApplInst(next_index2, pr_index1, pr_index2))
-            print(f"DEBUG {next_index1=} {next_index2=}")
-            return (
-                insts1,
-                subst(n1.t2, t.t2, n1.name),
-                next_index2,
-                next_index2 + 1,
-            )
+            print("TODO use conv rule")
+            insts.append(ApplInst(len(insts), pr_index1, pr_index2))
+            return (insts, subst(n1.t2, t.t2, n1.name), len(insts) - 1)
     if isinstance(t, LambdaTerm):
-        insts1, prop1, pr_index1, next_index1 = prove_term(
-            env, ctx.extend(t.name, t.t1), t.t2, current_index, index_for_sort
+        insts, prop1, pr_index1 = prove_term(
+            env, ctx.extend(t.name, t.t1), t.t2, insts, index_for_sort
         )
         prop = PiTerm(t.t1, prop1, t.name)
-        print(f"prop Pi: {prop}")
-        insts2, prop2, pr_index2, next_index2 = prove_term(
-            env, ctx, prop, next_index1, index_for_sort
-        )
+        insts, prop2, pr_index2 = prove_term(env, ctx, prop, insts, index_for_sort)
         if not is_s(prop2):
             raise fmtDeriveError("must be a sort", prop2)
-        insts1.extend(insts2)
-        insts1.append(AbstInst(next_index2, pr_index1, pr_index2))
-        return insts1, prop, next_index2, next_index2 + 1
+        insts.append(AbstInst(len(insts), pr_index1, pr_index2))
+        return insts, prop, len(insts) - 1
     if isinstance(t, ConstTerm):
-        insts1, prop1, pr_index1, next_index1 = prove_term(
-            env, ctx, StarTerm(), current_index, index_for_sort
+        insts, prop1, pr_index1 = prove_term(
+            env, ctx, StarTerm(), insts, index_for_sort
         )
         if not isinstance(prop1, SortTerm):
             raise fmtDeriveError("must be sort", prop1)
         dfn_i, dfn = next((i, dfn) for (i, dfn) in enumerate(env) if dfn.op == t.op)
-        next_index_u = next_index1
         pres: list[int] = []
-        insts: list[Instruction] = []
         names, tps = dfn.context.names_tps()
         for i, u in enumerate(t.children):
-            insts_u, prop_u, pr_index_u, next_index_u = prove_term(
-                env, ctx, u, next_index_u, index_for_sort
-            )
+            insts, prop_u, pr_index_u = prove_term(env, ctx, u, insts, index_for_sort)
             pres.append(pr_index_u)
-            insts.extend(insts_u)
             if not check_abd_eqv(
                 prop_u, subst_all(tps[i], names[:i], t.children[:i]), env
             ):
                 raise fmtDeriveError("type not matched", t)
         insts.append(
-            InstInst(next_index_u, pr_index1, len(dfn.context.container), pres, dfn_i)
+            InstInst(len(insts), pr_index1, len(dfn.context.container), pres, dfn_i)
         )
-        return insts, subst_all(dfn.prop, names, tps), next_index_u, next_index_u + 1
+        return insts, subst_all(dfn.prop, names, tps), len(insts) - 1
     if isinstance(t, PiTerm):
-        insts1, prop1, pr_index1, next_index1 = prove_term(
-            env, ctx, t.t1, current_index, index_for_sort
-        )
+        insts, prop1, pr_index1 = prove_term(env, ctx, t.t1, insts, index_for_sort)
         if not is_s(prop1):
             raise fmtDeriveError("must be a sort", t.t1)
-        insts2, prop2, pr_index2, next_index2 = prove_term(
-            env, ctx.extend(t.name, t.t1), t.t2, next_index1, index_for_sort
+        insts, prop2, pr_index2 = prove_term(
+            env, ctx.extend(t.name, t.t1), t.t2, insts, index_for_sort
         )
         if not is_s(prop2):
             raise fmtDeriveError("must be a sort", t.t2)
-        insts1.extend(insts2)
-        insts1.append(FormInst(next_index2, pr_index1, pr_index2))
-        return insts1, prop2, next_index2, next_index2 + 1
+        insts.append(FormInst(len(insts), pr_index1, pr_index2))
+        return insts, prop2, len(insts) - 1
     raise Exception(f"forget to implement {t}\n not defined yet")
 
 
@@ -296,25 +263,27 @@ if __name__ == "__main__":
             dfn_script.append(line)
     dfns: list[Definition] = []
     for ds in filter(lambda x: len(x) > 1, dfn_scripts):
-        dfns.append(parse_script(ds))
-    instructions: list[list[Instruction]] = [[SortInst(0)]]
-    instruction_index = 1
-    try: # for debug
-        for i, dfn in enumerate(dfns):
-            print()
-            try: # for debug
-                tpsss = set()
-                insts = prove_def(dfn, dfns[:i], instruction_index)
-                print(tpsss)
-            except Exception as e:
-                print(tpsss)
-                print("FAIL")
-                raise e
-            instructions.append(insts)
-            instruction_index += len(insts)
-    except:
-        pass
-    instructions.append([EndInst(-1)])
-    for insts in instructions:
-        for inst in insts:
-            print(inst)
+        try:
+            dfns.append(parse_script(ds))
+        except Exception as e:
+            import traceback
+
+            traceback.print_exc()
+            print(f"at: {ds=}")
+            exit(1)
+    instructions: list[Instruction] = [SortInst(0)]
+    for i, dfn in enumerate(dfns):
+        print()
+        try:
+            tpsss = set()
+            instructions = prove_def(dfn, dfns[:i], instructions)
+            print(tpsss)
+        except Exception as e:
+            print(tpsss)
+            for iss in instructions:
+                print(iss)
+
+            raise e
+    instructions.append(EndInst(-1))
+    for inst in instructions:
+        print(inst)

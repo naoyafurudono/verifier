@@ -78,6 +78,8 @@ def prove_term(
     current_index: int,
     index_for_sort: int,
 ) -> Tuple[list[Instruction], Term, int, int]:
+    if 24 <= current_index <= 26:
+        print(f"{current_index=} {t}")
     global tpsss
     tpsss.add(type(t))
     # 返すのは
@@ -99,7 +101,7 @@ def prove_term(
                 env, head, t, current_index, index_for_sort
             )
             insts2, prop2, pr_index2, next_index2 = prove_term(
-                env, head, tp, current_index, index_for_sort
+                env, head, tp, next_index1, index_for_sort
             )
             insts1.extend(insts2)
             insts1.append(WeakInst(next_index2, pr_index1, pr_index2, name))
@@ -149,6 +151,7 @@ def prove_term(
             # raise fmtDeriveError("# TODO: bd/同値を使った場合にconvを追加する", t)
             insts1.extend(insts2)
             insts1.append(ApplInst(next_index2, pr_index1, pr_index2))
+            print(f"DEBUG {next_index1=} {next_index2=}")
             return (
                 insts1,
                 subst(n1.t2, t.t2, n1.name),
@@ -293,32 +296,24 @@ if __name__ == "__main__":
             dfn_script.append(line)
     dfns: list[Definition] = []
     for ds in filter(lambda x: len(x) > 1, dfn_scripts):
-        try:
-            dfns.append(parse_script(ds))
-        except Exception as e:
-            import traceback
-
-            traceback.print_exc()
-            print(f"at: {ds=}")
-            exit(1)
+        dfns.append(parse_script(ds))
     instructions: list[list[Instruction]] = [[SortInst(0)]]
     instruction_index = 1
-    for i, dfn in enumerate(dfns):
-        print()
-        try:
-            tpsss = set()
-            insts = prove_def(dfn, dfns[:i], instruction_index)
-            print(tpsss)
-        except Exception as e:
-            print(tpsss)
+    try: # for debug
+        for i, dfn in enumerate(dfns):
             print()
-            for iss in instructions:
-                for i in iss:
-                    print(i)
-
-            raise e
-        instructions.append(insts)
-        instruction_index += len(insts)
+            try: # for debug
+                tpsss = set()
+                insts = prove_def(dfn, dfns[:i], instruction_index)
+                print(tpsss)
+            except Exception as e:
+                print(tpsss)
+                print("FAIL")
+                raise e
+            instructions.append(insts)
+            instruction_index += len(insts)
+    except:
+        pass
     instructions.append([EndInst(-1)])
     for insts in instructions:
         for inst in insts:

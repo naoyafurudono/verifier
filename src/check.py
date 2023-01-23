@@ -195,8 +195,11 @@ def check(inst: Instruction, book: list[Judgement]) -> list[Judgement]:
         )
         return _book
     elif isinstance(inst, WeakInst):
-        premise1 = book[inst.pre1]
-        premise2 = book[inst.pre2]
+        try:
+            premise1 = book[inst.pre1]
+            premise2 = book[inst.pre2]
+        except IndexError:
+            raise fmtErr_(inst, "no book entry found")
         new_name = inst.var
         if premise1.environment != premise2.environment:
             raise fmtErr_(inst, "environments are not agree")

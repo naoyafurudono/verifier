@@ -11,6 +11,10 @@
         "Appl",
         "dfns",
         "edef",
-        "insts"
-    ]
+        "insts",
+        "lnum"
+    ],
+    "files.watcherExclude": {
+        "**/target": true
+    }
 }

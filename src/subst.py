@@ -46,7 +46,13 @@ def subst(t1: Term, t2: Term, name: str) -> Term:
 
 
 def subst_all(t: Term, names: list[str], terms: list[Term]) -> Term:
-    return functools.reduce(lambda t, b: subst(t, b[1], b[0]), zip(names, terms), t)
+    tt = t
+    freshes: list[str] = []
+    for i in range(len(names)):
+        fresh = Fresh.fresh()
+        freshes.append(fresh)
+        tt = rename(tt, names[i], fresh)
+    return functools.reduce(lambda t, b: subst(t, b[1], b[0]), zip(freshes, terms), tt)
 
 
 def rename(t: Term, frm: str, to: str) -> Term:

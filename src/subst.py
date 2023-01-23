@@ -14,6 +14,7 @@ from parse import (
 
 
 def subst(t1: Term, t2: Term, name: str) -> Term:
+    # t1[name !--> t2]
     if isinstance(t1, VarTerm):
         if t1.name == name:
             return t2

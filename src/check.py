@@ -15,7 +15,7 @@ from parse import (
     parse_term,
 )
 from fresh_name import Fresh
-from subst import rename, subst
+from subst import rename, subst, subst_all
 from inst import (
     AbstInst,
     ApplInst,
@@ -474,10 +474,10 @@ def normalize(t: Term, env: list[Definition]) -> Term:
         return PiTerm(normalize(t.t1, env), normalize(t.t2, env), t.name)
     elif isinstance(t, ConstTerm):
         children = list(map(lambda tt: normalize(tt, env), t.children))
-        i = list(map(lambda d: d.op, env)).index(t.op)
-        if i == -1:
-            raise fmtErrN_(t, env, f"op `{t.op}` not defined")
-        dfn = env[i]
+        mb_dfn = next(dfn for dfn in env if dfn.op == t.op)
+        if not mb_dfn:
+            raise fmtErrN_(t, env, "definition not found")
+        dfn = mb_dfn
         if len(dfn.context.container) != len(children):
             # 型検査通ってるのでokなはず？
             raise fmtErrN_(t, env, "arity mismatch")
@@ -498,11 +498,8 @@ def beta_reduction(f: LambdaTerm, t: Term) -> Term:
 def delta_reduction(dfn: Definition, args: list[Term]) -> Term:
     if dfn.is_prim:
         raise NormalizationError("cannot reduce")
-    return functools.reduce(
-        lambda body, sbst: subst(body, sbst[1], sbst[0]),
-        zip(dfn.context.params(), args),
-        dfn.body,
-    )
+    names = dfn.context.params()
+    return subst_all(dfn.body, names, args)
 
 
 if __name__ == "__main__":

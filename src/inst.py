@@ -11,18 +11,22 @@ class Instruction:
 
 @dataclass(frozen=True)
 class EndInst(Instruction):
-    pass
+    def __str__(self):
+        return f"{self.lnum}"
 
 
 @dataclass(frozen=True)
 class SortInst(Instruction):
-    pass
+    def __str__(self) -> str:
+        return f"{self.lnum} sort"
 
 
 @dataclass(frozen=True)
 class VarInst(Instruction):
     pre: int
     var: VarTerm
+    def __str__(self) -> str:
+        return f"{self.lnum} var {self.pre} {self.var}"
 
 
 @dataclass(frozen=True)
@@ -30,24 +34,32 @@ class WeakInst(Instruction):
     pre1: int
     pre2: int
     var: str
+    def __str__(self) -> str:
+        return f"{self.lnum} weak {self.pre1} {self.pre2} {self.var}"
 
 
 @dataclass(frozen=True)
 class FormInst(Instruction):
     pre1: int
     pre2: int
+    def __str__(self) -> str:
+        return f"{self.lnum} form {self.pre1} {self.pre2}"
 
 
 @dataclass(frozen=True)
 class ApplInst(Instruction):
     pre1: int
     pre2: int
+    def __str__(self) -> str:
+        return f"{self.lnum} appl {self.pre1} {self.pre2}"
 
 
 @dataclass(frozen=True)
 class AbstInst(Instruction):
     pre1: int
     pre2: int
+    def __str__(self) -> str:
+        return f"{self.lnum} abst {self.pre1} {self.pre2}"
 
 
 @dataclass(frozen=True)
@@ -55,6 +67,8 @@ class DefInst(Instruction):
     pre1: int
     pre2: int
     op: str
+    def __str__(self) -> str:
+        return f"{self.lnum} def {self.pre1} {self.pre2} {self.op}"
 
 
 @dataclass(frozen=True)
@@ -62,6 +76,9 @@ class DefPrInst(Instruction):
     pre1: int
     pre2: int
     op: str
+    def __str__(self) -> str:
+        return f"{self.lnum} defpr {self.pre1} {self.pre2} {self.op}"
+
 
 
 @dataclass(frozen=True)
@@ -71,12 +88,16 @@ class InstInst(Instruction):
     length: int
     pres: list[int]
     op_offset: int
+    def __str__(self) -> str:
+        return f"{self.lnum} inst {self.pre} {self.length} {' '.join(map(lambda x: x.__str__(), self.pres))} {self.op_offset}"
 
 
 @dataclass(frozen=True)
 class ConvInst(Instruction):
     pre1: int
     pre2: int
+    def __str__(self) -> str:
+        return f"{self.lnum} {self.pre1} {self.pre2}"
 
 
 @dataclass(frozen=True)

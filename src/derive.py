@@ -18,6 +18,7 @@ from inst import (
     FormInst,
     InstInst,
     Instruction,
+    SortInst,
     VarInst,
     WeakInst,
 )
@@ -68,8 +69,6 @@ def prove_def(dfn: Definition, env: list[Definition], index: int) -> list[Instru
 
 def check_abd_eqv(t1: Term, t2: Term, env: list[Definition]) -> bool:
     return t1 == t2 or bd_eqv(t1, t2, env)
-
-
 
 
 def prove_term(
@@ -302,8 +301,8 @@ if __name__ == "__main__":
             traceback.print_exc()
             print(f"at: {ds=}")
             exit(1)
-    instructions: list[list[Instruction]] = []
-    instruction_index = 0
+    instructions: list[list[Instruction]] = [[SortInst(0)]]
+    instruction_index = 1
     for i, dfn in enumerate(dfns):
         print()
         try:
@@ -312,6 +311,11 @@ if __name__ == "__main__":
             print(tpsss)
         except Exception as e:
             print(tpsss)
+            print()
+            for iss in instructions:
+                for i in iss:
+                    print(i)
+
             raise e
         instructions.append(insts)
         instruction_index += len(insts)

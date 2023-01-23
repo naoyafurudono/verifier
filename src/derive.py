@@ -59,7 +59,7 @@ def prove_def(
     else:
         insts, prop, pr_index = prove_term(env, dfn.context, dfn.body, insts, initial)
         if not check_abd_eqv(prop, dfn.prop, env):
-            # print(f"{prop=}\n{dfn=}")
+            print(f"{prop=}\n{dfn=}")
             raise fmtDeriveError("fail to derive expected property", dfn.prop)
         insts.append(DefInst(len(insts), initial, pr_index, dfn.op))
         return insts
@@ -112,6 +112,8 @@ def prove_term(
                 raise fmtDeriveError("ctx too short", t)
             insts, prop1, pr_index1 = prove_term(env, head, t, insts, index_for_sort)
             insts, prop2, pr_index2 = prove_term(env, head, tp, insts, index_for_sort)
+            if not is_s(prop2):
+                raise fmtDeriveError("must be a sort", tp)
             insts.append(WeakInst(len(insts), pr_index1, pr_index2, name))
             return insts, prop1, len(insts) - 1
         else:
@@ -122,6 +124,8 @@ def prove_term(
                 insts, prop, pr_index = prove_term(
                     env, mb_ctx, tp, insts, index_for_sort
                 )
+                if not is_s(prop):
+                    raise fmtDeriveError("must be a sort", tp)
                 insts.append(VarInst(len(insts), pr_index, t))
                 return insts, tp, len(insts) - 1
     if isinstance(t, AppTerm):
@@ -133,7 +137,7 @@ def prove_term(
             raise fmtDeriveError("must have Pi term", t.t1)
         else:
             if not check_abd_eqv(n1.t1, prop2, env):
-                raise fmtDeriveError("fail to check eqv", t)
+                raise fmtDeriveError(f"fail to check eqv\nexpect: {prop2}\nactual: {n1}", t)
             print("TODO use conv rule")
             insts.append(ApplInst(len(insts), pr_index1, pr_index2))
             return (insts, subst(n1.t2, t.t2, n1.name), len(insts) - 1)
@@ -166,7 +170,7 @@ def prove_term(
         insts.append(
             InstInst(len(insts), pr_index1, len(dfn.context.container), pres, dfn_i)
         )
-        return insts, subst_all(dfn.prop, names, tps), len(insts) - 1
+        return insts, subst_all(dfn.prop, names, t.children), len(insts) - 1
     if isinstance(t, PiTerm):
         insts, prop1, pr_index1 = prove_term(env, ctx, t.t1, insts, index_for_sort)
         if not is_s(prop1):

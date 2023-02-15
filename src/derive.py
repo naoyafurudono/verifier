@@ -126,60 +126,60 @@ def prove_term(
                         raise fmtDeriveError("must be a sort", tp)
                     insts.append(VarInst(len(insts), pr_index, t))
                     return tp, len(insts) - 1
-        case AppTerm():
-            prop1, pr_index1 = prove_term(env, ctx, t.t1, insts, index_for_sort)
-            prop2, pr_index2 = prove_term(env, ctx, t.t2, insts, index_for_sort)
+        case AppTerm(t1, t2):
+            prop1, pr_index1 = prove_term(env, ctx, t1, insts, index_for_sort)
+            prop2, pr_index2 = prove_term(env, ctx, t2, insts, index_for_sort)
             n1 = normalize(prop1, env)
             print("TODO use conv rule", file=sys.stderr)
             if not isinstance(n1, PiTerm):
-                raise fmtDeriveError("must have Pi term", t.t1)
+                raise fmtDeriveError("must have Pi term", t1)
             else:
                 if not check_abd_eqv(n1.t1, prop2, env):
-                    print(f"operator: {t.t1}\ntype: {n1}\nctx: {ctx}", file=sys.stderr)
+                    print(f"operator: {t1}\ntype: {n1}\nctx: {ctx}", file=sys.stderr)
                     raise fmtDeriveError(
                         f"arg type must match Pi param type\n  expect: {n1.t1}\n  actual: {prop2}",
                         t,
                     )
                 print("TODO use conv rule", file=sys.stderr)
                 insts.append(ApplInst(len(insts), pr_index1, pr_index2))
-                return subst(n1.t2, t.t2, n1.name), len(insts) - 1
-        case LambdaTerm():
+                return subst(n1.t2, t2, n1.name), len(insts) - 1
+        case LambdaTerm(t1, t2, name):
             prop1, pr_index1 = prove_term(
-                env, ctx.extend(t.name, t.t1), t.t2, insts, index_for_sort
+                env, ctx.extend(name, t1), t2, insts, index_for_sort
             )
-            prop = PiTerm(t.t1, prop1, t.name)
+            prop = PiTerm(t1, prop1, name)
             prop2, pr_index2 = prove_term(env, ctx, prop, insts, index_for_sort)
             if not is_s(prop2):
                 raise fmtDeriveError("must be a sort", prop2)
             insts.append(AbstInst(len(insts), pr_index1, pr_index2))
             return prop, len(insts) - 1
-        case ConstTerm():
+        case ConstTerm(op, children):
             prop1, pr_index1 = prove_term(env, ctx, StarTerm(), insts, index_for_sort)
             if not isinstance(prop1, SortTerm):
                 raise fmtDeriveError("must be sort", prop1)
-            dfn_i, dfn = next((i, dfn) for (i, dfn) in enumerate(env) if dfn.op == t.op)
+            dfn_i, dfn = next((i, dfn) for (i, dfn) in enumerate(env) if dfn.op == op)
             pres: list[int] = []
             names, tps = dfn.context.names_tps()
-            for i, u in enumerate(t.children):
+            for i, u in enumerate(children):
                 prop_u, pr_index_u = prove_term(env, ctx, u, insts, index_for_sort)
                 pres.append(pr_index_u)
                 if not check_abd_eqv(
-                    prop_u, subst_all(tps[i], names[:i], t.children[:i]), env
+                    prop_u, subst_all(tps[i], names[:i], children[:i]), env
                 ):
                     raise fmtDeriveError("type not matched", t)
             insts.append(
                 InstInst(len(insts), pr_index1, len(dfn.context.container), pres, dfn_i)
             )
-            return subst_all(dfn.prop, names, t.children), len(insts) - 1
-        case PiTerm():
-            prop1, pr_index1 = prove_term(env, ctx, t.t1, insts, index_for_sort)
+            return subst_all(dfn.prop, names, children), len(insts) - 1
+        case PiTerm(t1, t2, name):
+            prop1, pr_index1 = prove_term(env, ctx, t1, insts, index_for_sort)
             if not is_s(prop1):
-                raise fmtDeriveError("must be a sort", t.t1)
+                raise fmtDeriveError("must be a sort", t1)
             prop2, pr_index2 = prove_term(
-                env, ctx.extend(t.name, t.t1), t.t2, insts, index_for_sort
+                env, ctx.extend(name, t1), t2, insts, index_for_sort
             )
             if not is_s(prop2):
-                raise fmtDeriveError("must be a sort", t.t2)
+                raise fmtDeriveError("must be a sort", t2)
             insts.append(FormInst(len(insts), pr_index1, pr_index2))
             return prop2, len(insts) - 1
         case _:

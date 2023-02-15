@@ -1,10 +1,10 @@
 # parse.py
 # Termとその生成関数（parse_term）を定義する
 
-from typing import Tuple
-import re
 import argparse
+import re
 from dataclasses import dataclass
+from typing import Tuple
 
 
 @dataclass(frozen=True)

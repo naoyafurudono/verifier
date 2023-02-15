@@ -1,4 +1,5 @@
 import functools
+
 from fresh_name import Fresh
 from parse import (
     AppTerm,
@@ -86,8 +87,8 @@ def rename(t: Term, frm: str, to: str) -> Term:
 
 
 if __name__ == "__main__":
-    import re
     import argparse
+    import re
 
     from parse import parse_term
 

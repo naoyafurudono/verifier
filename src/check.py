@@ -270,7 +270,7 @@ def check(inst: Instruction, book: list[Judgement]) -> list[Judgement]:
             raise fmtErr_(inst, "contexts are not agree")
         mb_pi_term = premise2.proof
         if not isinstance(mb_pi_term, PiTerm):
-            raise fmtErr_(inst, "pre2 must prove Pi term")
+            raise fmtErr_(inst, "pre2 must derive Pi term")
         else:
             if (
                 premise1.context.car()[0] != mb_pi_term.name
@@ -278,7 +278,7 @@ def check(inst: Instruction, book: list[Judgement]) -> list[Judgement]:
             ):
                 raise fmtErr_(inst, "pre1.context must end with binding of pre2.proof")
             if premise1.prop != mb_pi_term.t2:
-                raise fmtErr_(inst, "pre1 must prove pre2.proof's conclusion")
+                raise fmtErr_(inst, f"pre1 must prove pre2.proof's conclusion\npre1.prop:\t{premise1.prop}\nconcl.:\t{mb_pi_term.t2}")
             _book = book.copy()
             _book.append(
                 Judgement(

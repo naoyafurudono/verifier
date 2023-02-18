@@ -12,6 +12,9 @@ class Term:
     def __eq__(self, that):
         return alpha_eqv(self, that)
 
+    def __ne__(self, that):
+        return not alpha_eqv(self, that)
+
 
 @dataclass(frozen=True)
 class VarTerm(Term):
@@ -228,12 +231,14 @@ def alpha_with_env_depth(
         depth2 = env2.get(t2.name)
         match (depth1, depth2):
             case (None, None):
+                # 自由変数同士は名前で比較
                 return t1.name == t2.name
             case (None, _):
                 return False
             case (_, None):
                 return False
             case (d1, d2):
+                # 束縛変数同士はde Bruijnで比較
                 return d1 == d2
     elif (isinstance(t1, LambdaTerm) and isinstance(t2, LambdaTerm)) or (
         isinstance(t1, PiTerm) and isinstance(t2, PiTerm)
@@ -246,10 +251,8 @@ def alpha_with_env_depth(
         envc1[t1.name] = depth
         envc2[t2.name] = depth
         return alpha_with_env_depth(t1.t2, t2.t2, envc1, envc2, depth + 1)
-    elif (
-        isinstance(t1, StarTerm)
-        and isinstance(t2, StarTerm)
-        or (isinstance(t1, SortTerm) and isinstance(t2, SortTerm))
+    elif (isinstance(t1, StarTerm) and isinstance(t2, StarTerm)) or (
+        isinstance(t1, SortTerm) and isinstance(t2, SortTerm)
     ):
         return True
     elif isinstance(t1, AppTerm) and isinstance(t2, AppTerm):

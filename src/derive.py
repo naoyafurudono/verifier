@@ -13,10 +13,30 @@ import traceback
 from typing import Tuple
 
 from check import Context, Definition, bd_eqv, normalize
-from inst import (AbstInst, ApplInst, DefInst, EndInst, FormInst, InstInst,
-                  Instruction, SortInst, VarInst, WeakInst)
-from parse import (AppTerm, ConstTerm, LambdaTerm, PiTerm, SortTerm, StarTerm,
-                   Term, VarTerm, parse_term)
+from inst import (
+    AbstInst,
+    ApplInst,
+    ConvInst,
+    DefInst,
+    EndInst,
+    FormInst,
+    InstInst,
+    Instruction,
+    SortInst,
+    VarInst,
+    WeakInst,
+)
+from parse import (
+    AppTerm,
+    ConstTerm,
+    LambdaTerm,
+    PiTerm,
+    SortTerm,
+    StarTerm,
+    Term,
+    VarTerm,
+    parse_term,
+)
 from subst import subst, subst_all
 
 
@@ -54,11 +74,28 @@ def assert_index(insts: list[Instruction], base: int, actual: int):
         raise Exception(f"insts len: {len(insts)}\n{base=}\n{actual=}")
 
 
+def prove_normalize(
+    env: list[Definition],
+    ctx: Context,
+    tp: Term,
+    pr_index_t: int,
+    insts: list[Instruction],  # このリストを破壊的に変更することに注意
+    index_for_sort: int,
+) -> Tuple[Term, int]:
+    "tの正規形とそれを示したインデックスを返す。そのために必要な命令をinstsにアペンドする"
+    n = normalize(tp, env)
+    s, pr_index_n = prove_term(env, ctx, n, insts, index_for_sort)
+    if not is_s(s):
+        raise fmtDeriveError("conv cannot prove equivalence of non-type", tp)
+    insts.append(ConvInst(len(insts), pr_index_t, pr_index_n))
+    return n, len(insts) - 1
+
+
 def prove_term(
     env: list[Definition],
     ctx: Context,
     t: Term,
-    insts: list[Instruction],
+    insts: list[Instruction],  # このリストを破壊的に変更することに注意
     index_for_sort: int,
 ) -> Tuple[Term, int]:
     # 返すのは
@@ -109,25 +146,42 @@ def prove_term(
                     return tp, len(insts) - 1
         case AppTerm(t1, t2):
             prop1, pr_index1 = prove_term(env, ctx, t1, insts, index_for_sort)
-            prop2, pr_index2 = prove_term(env, ctx, t2, insts, index_for_sort)
-            n1 = normalize(prop1, env)
-            print("TODO use conv rule", file=sys.stderr)
-            if not isinstance(n1, PiTerm):
-                raise fmtDeriveError("must have Pi term", t1)
+            if isinstance(prop1, PiTerm):
+                n1 = prop1
             else:
-                if not check_abd_eqv(n1.t1, prop2, env):
-                    print(f"operator: {t1}\ntype: {n1}\nctx: {ctx}", file=sys.stderr)
-                    raise fmtDeriveError(
-                        f"arg type must match Pi param type\n  expect: {n1.t1}\n  actual: {prop2}",
-                        t,
+                tmp, pr_index1 = prove_normalize(
+                    env, ctx, prop1, pr_index1, insts, index_for_sort
+                )
+                if not isinstance(tmp, PiTerm):
+                    raise fmtDeriveError("must have Pi term", t1)
+                n1 = tmp
+
+            prop2, pr_index2 = prove_term(env, ctx, t2, insts, index_for_sort)
+            if n1.t1 != prop2:
+                # 引数の型の導出木へのポインタと命題を書き換え
+                prop2, pr_index2 = prove_normalize(
+                    env, ctx, prop2, pr_index2, insts, index_for_sort
+                )
+                if n1.t1 != prop2:
+                    n, pr_index1 = prove_normalize(
+                        env, ctx, n1, pr_index1, insts, index_for_sort
                     )
-                print("TODO use conv rule", file=sys.stderr)
-                insts.append(ApplInst(len(insts), pr_index1, pr_index2))
-                return subst(n1.t2, t2, n1.name), len(insts) - 1
+                    if not isinstance(n, PiTerm):
+                        raise DeriveError("never")
+                    n1 = n
+                    if n1.t1 != prop2:
+                        raise fmtDeriveError(
+                            f"arg type must match Pi param type\n  expect: {n1.t1}\n  actual: {prop2}",
+                            t,
+                        )
+            insts.append(ApplInst(len(insts), pr_index1, pr_index2))
+            return subst(n1.t2, t2, n1.name), len(insts) - 1
         case LambdaTerm(t1, t2, name):
+            # prop1 = B
             prop1, pr_index1 = prove_term(
                 env, ctx.extend(name, t1), t2, insts, index_for_sort
             )
+            # prop = Pi type of t
             prop = PiTerm(t1, prop1, name)
             prop2, pr_index2 = prove_term(env, ctx, prop, insts, index_for_sort)
             if not is_s(prop2):
@@ -227,12 +281,13 @@ def parse_script(lines: list[str]) -> Definition:
 
     return Definition(op, Context(binds), m, n, is_prim=prim_flag)
 
+
 def derive_lines(lines: list[str]) -> list[Instruction]:
     dfn_scripts: list[list[str]] = []
     dfn_script: list[str] = []
     for line in lines:
         line = line[:-1]
-        if line == "":
+        if line in ["", "END"]:
             dfn_scripts.append(dfn_script)
             dfn_script = []
         else:
@@ -255,8 +310,10 @@ def derive_lines(lines: list[str]) -> list[Instruction]:
             traceback.print_exc()
             print(f"derivation error at: {dfn}", file=sys.stderr)
             raise e
+        print(f"derive {i}")
     instructions.append(EndInst(-1))
     return instructions
+
 
 if __name__ == "__main__":
     import argparse

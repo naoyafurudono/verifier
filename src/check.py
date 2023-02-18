@@ -170,252 +170,251 @@ def fmtErr_(inst: Instruction, msg: str) -> VerificationError:
 
 
 def check(inst: Instruction, book: list[Judgement]) -> list[Judgement]:
-    if isinstance(inst, SortInst):
-        _book = book.copy()
-        _book.append(
-            Judgement(
-                environment=[],
-                context=Context([]),
-                proof=parse_term("*"),
-                prop=parse_term("@"),
+    match inst:
+        case SortInst(_lnum):
+            _book = book.copy()
+            _book.append(
+                Judgement(
+                    environment=[],
+                    context=Context([]),
+                    proof=parse_term("*"),
+                    prop=parse_term("@"),
+                )
             )
-        )
-        return _book
-    elif isinstance(inst, VarInst):
-        premise = book[inst.pre]
-        var_name: str = inst.var.name
-        _book = book.copy()
-        _book.append(
-            Judgement(
-                environment=premise.environment,
-                context=premise.context.extend(var_name, premise.proof),
-                proof=inst.var,
-                prop=premise.proof,
+            return _book
+        case VarInst(_lnum, pre, var):
+            premise = book[pre]
+            var_name: str = inst.var.name
+            _book = book.copy()
+            _book.append(
+                Judgement(
+                    environment=premise.environment,
+                    context=premise.context.extend(var_name, premise.proof),
+                    proof=var,
+                    prop=premise.proof,
+                )
             )
-        )
-        return _book
-    elif isinstance(inst, WeakInst):
-        try:
-            premise1 = book[inst.pre1]
-            premise2 = book[inst.pre2]
-        except IndexError:
-            raise fmtErr_(inst, "no book entry found")
-        new_name = inst.var
-        if premise1.environment != premise2.environment:
-            raise fmtErr_(inst, "environments are not agree")
-        if premise1.context != premise2.context:
-            raise fmtErr_(inst, "contexts are not agree")
-        if new_name in premise1.context.params():
-            raise fmtErr_(inst, f"variable {new_name} is already used in the context")
-        _book = book.copy()
-        _book.append(
-            Judgement(
-                environment=premise1.environment,
-                context=premise1.context.extend(new_name, premise2.proof),
-                proof=premise1.proof,
-                prop=premise1.prop,
+            return _book
+        case WeakInst(_lnum, pre1, pre2, var):
+            try:
+                premise1 = book[pre1]
+                premise2 = book[pre2]
+            except IndexError:
+                raise fmtErr_(inst, "no book entry found")
+            new_name = inst.var
+            if premise1.environment != premise2.environment:
+                raise fmtErr_(inst, "environments are not agree")
+            if premise1.context != premise2.context:
+                raise fmtErr_(inst, "contexts are not agree")
+            if new_name in premise1.context.params():
+                raise fmtErr_(inst, f"variable {new_name} is already used in the context")
+            _book = book.copy()
+            _book.append(
+                Judgement(
+                    environment=premise1.environment,
+                    context=premise1.context.extend(new_name, premise2.proof),
+                    proof=premise1.proof,
+                    prop=premise1.prop,
+                )
             )
-        )
-        return _book
-    elif isinstance(inst, FormInst):
-        premise1 = book[inst.pre1]
-        premise2 = book[inst.pre2]
-        if premise1.environment != premise2.environment:
-            raise fmtErr_(inst, "environments are not agree")
-        if premise1.context != premise2.context.cdr():
-            raise fmtErr_(inst, "contexts are not agree")
-        if premise1.proof != premise2.context.car()[1]:
-            raise fmtErr_(
-                inst, "proof of pre1 does not agree with last type of the pre2 context"
-            )
-        _book = book.copy()
-        _book.append(
-            Judgement(
-                environment=premise1.environment,
-                context=premise1.context,
-                proof=PiTerm(premise1.proof, premise2.proof, premise2.context.car()[0]),
-                prop=premise2.prop,
-            )
-        )
-        return _book
-    elif isinstance(inst, ApplInst):
-        premise1 = book[inst.pre1]
-        premise2 = book[inst.pre2]
-        if premise1.environment != premise2.environment:
-            raise fmtErr_(inst, "environments are not agree")
-        if premise1.context != premise2.context:
-            raise fmtErr_(inst, "contexts are not agree")
-        mb_funtype = premise1.prop
-        if not isinstance(mb_funtype, PiTerm):
-            raise fmtErr_(inst, "pre1 must prove Pi type")
-        else:
-            if not mb_funtype.t1 == premise2.prop:
-                raise fmtErr_(inst, "pre1 parameter type does not agree with pre2 type")
+            return _book
+        case FormInst(_lnum, pre1, pre2):
+            premise1 = book[pre1]
+            premise2 = book[pre2]
+            if premise1.environment != premise2.environment:
+                raise fmtErr_(inst, "environments are not agree")
+            if premise1.context != premise2.context.cdr():
+                raise fmtErr_(inst, "contexts are not agree")
+            if premise1.proof != premise2.context.car()[1]:
+                raise fmtErr_(
+                    inst, "proof of pre1 does not agree with last type of the pre2 context"
+                )
             _book = book.copy()
             _book.append(
                 Judgement(
                     environment=premise1.environment,
                     context=premise1.context,
-                    proof=AppTerm(premise1.proof, premise2.proof),
-                    prop=subst(mb_funtype.t2, premise2.proof, mb_funtype.name),
+                    proof=PiTerm(premise1.proof, premise2.proof, premise2.context.car()[0]),
+                    prop=premise2.prop,
                 )
             )
             return _book
-    elif isinstance(inst, AbstInst):
-        premise1 = book[inst.pre1]
-        premise2 = book[inst.pre2]
-        if premise1.environment != premise2.environment:
-            raise fmtErr_(inst, "environments are not agree")
-        if premise1.context.cdr() != premise2.context:
-            raise fmtErr_(inst, "contexts are not agree")
+        case ApplInst(_lnum, pre1, pre2):
+            premise1 = book[pre1]
+            premise2 = book[pre2]
+            if premise1.environment != premise2.environment:
+                raise fmtErr_(inst, "environments are not agree")
+            if premise1.context != premise2.context:
+                raise fmtErr_(inst, "contexts are not agree")
+            mb_funtype = premise1.prop
+            if not isinstance(mb_funtype, PiTerm):
+                raise fmtErr_(inst, "pre1 must prove Pi type")
+            else:
+                if not mb_funtype.t1 == premise2.prop:
+                    raise fmtErr_(inst, "pre1 parameter type does not agree with pre2 type")
+                _book = book.copy()
+                _book.append(
+                    Judgement(
+                        environment=premise1.environment,
+                        context=premise1.context,
+                        proof=AppTerm(premise1.proof, premise2.proof),
+                        prop=subst(mb_funtype.t2, premise2.proof, mb_funtype.name),
+                    )
+                )
+                return _book
+        case AbstInst(_lnum, pre1, pre2):
+            premise1 = book[pre1]
+            premise2 = book[pre2]
+            if premise1.environment != premise2.environment:
+                raise fmtErr_(inst, "environments are not agree")
+            if premise1.context.cdr() != premise2.context:
+                raise fmtErr_(inst, "contexts are not agree")
 
-        mb_pi_term = premise2.proof
-        if not isinstance(mb_pi_term, PiTerm):
-            raise fmtErr_(inst, "pre2 must derive Pi term")
+            mb_pi_term = premise2.proof
+            if not isinstance(mb_pi_term, PiTerm):
+                raise fmtErr_(inst, "pre2 must derive Pi term")
 
-        if (
-            premise1.context.car()[0] != mb_pi_term.name
-            or premise1.context.car()[1] != mb_pi_term.t1
-        ):
-            raise fmtErr_(inst, "pre1.context must end with binding of pre2.proof")
+            if (
+                premise1.context.car()[0] != mb_pi_term.name
+                or premise1.context.car()[1] != mb_pi_term.t1
+            ):
+                raise fmtErr_(inst, "pre1.context must end with binding of pre2.proof")
 
-        if premise1.prop != mb_pi_term.t2:
-            raise fmtErr_(
-                inst,
-                f"pre1 must prove pre2.proof's conclusion\npre1.prop:\t{premise1.prop}\nconcl.:\t{mb_pi_term.t2}",
+            if premise1.prop != mb_pi_term.t2:
+                raise fmtErr_(
+                    inst,
+                    f"pre1 must prove pre2.proof's conclusion\npre1.prop:\t{premise1.prop}\nconcl.:\t{mb_pi_term.t2}",
+                )
+
+            _book = book.copy()
+            _book.append(
+                Judgement(
+                    environment=premise2.environment,
+                    context=premise2.context,
+                    proof=LambdaTerm(mb_pi_term.t1, premise1.proof, mb_pi_term.name),
+                    prop=premise2.proof,
+                )
             )
-
-        _book = book.copy()
-        _book.append(
-            Judgement(
-                environment=premise2.environment,
+            return _book
+        case ConvInst(_lnum, pre1, pre2):
+            premise1 = book[pre1]
+            premise2 = book[pre2]
+            if premise1.environment != premise2.environment:
+                raise fmtErr_(inst, "environments are not agree")
+            if premise1.context != premise2.context:
+                raise fmtErr_(inst, "contexts are not agree")
+            if not bd_eqv(premise1.prop, premise2.proof, premise1.environment):
+                raise fmtErr_(
+                    inst,
+                    f"pre2.proof must be beta-delta eqv to pre1 prop\n{premise1.prop} vs. {premise2.proof}",
+                )
+            _book = book.copy()
+            _book.append(
+                Judgement(
+                    environment=premise1.environment,
+                    context=premise1.context,
+                    proof=premise1.proof,
+                    prop=premise2.proof,
+                )
+            )
+            return _book
+        case DefInst(_lnum, pre1, pre2, op):
+            premise1 = book[pre1]
+            premise2 = book[pre2]
+            if premise1.environment != premise2.environment:
+                raise fmtErr_(inst, "environments are not agree")
+            if op in map(lambda d: d.op, premise1.environment):
+                raise fmtErr_(inst, f"constant {op} is already defined in the environment")
+            dfn = Definition(
+                op=op, context=premise2.context, body=premise2.proof, prop=premise2.prop
+            )
+            _env = premise1.environment.copy()
+            _env.append(dfn)
+            _book = book.copy()
+            _book.append(
+                Judgement(
+                    environment=_env,
+                    context=premise1.context,
+                    proof=premise1.proof,
+                    prop=premise1.prop,
+                )
+            )
+            return _book
+        case DefPrInst(_lnum, pre1, pre2, op):
+            premise1 = book[pre1]
+            premise2 = book[pre2]
+            if premise1.environment != premise2.environment:
+                raise fmtErr_(inst, "environments are not agree")
+            if op in map(lambda d: d.op, premise1.environment):
+                raise fmtErr_(inst, f"constant {op} is already defined in the environment")
+            dfn = Definition(
+                op=op,
                 context=premise2.context,
-                proof=LambdaTerm(mb_pi_term.t1, premise1.proof, mb_pi_term.name),
+                body=StarTerm(),  # Dummy
                 prop=premise2.proof,
+                is_prim=True,
             )
-        )
-        return _book
-    elif isinstance(inst, ConvInst):
-        premise1 = book[inst.pre1]
-        premise2 = book[inst.pre2]
-        if premise1.environment != premise2.environment:
-            raise fmtErr_(inst, "environments are not agree")
-        if premise1.context != premise2.context:
-            raise fmtErr_(inst, "contexts are not agree")
-        if not bd_eqv(premise1.prop, premise2.proof, premise1.environment):
-            raise fmtErr_(
-                inst,
-                f"pre2.proof must be beta-delta eqv to pre1 prop\n{premise1.prop} vs. {premise2.proof}",
+            _env = premise1.environment.copy()
+            _env.append(dfn)
+            _book = book.copy()
+            _book.append(
+                Judgement(
+                    environment=_env,
+                    context=premise1.context,
+                    proof=premise1.proof,
+                    prop=premise1.prop,
+                )
             )
-        _book = book.copy()
-        _book.append(
-            Judgement(
-                environment=premise1.environment,
-                context=premise1.context,
-                proof=premise1.proof,
-                prop=premise2.proof,
+            return _book
+        case InstInst(_lnum, pre, _length, pres, op_offset):
+            # instとinst-primを区別する必要はない
+            premise = book[pre]
+            premises = list(map(lambda i: book[i], pres))
+            if any(map(lambda pre: premise.environment != pre.environment, premises)):
+                raise fmtErr_(inst, "environments are not agree")
+            if any(map(lambda pre: premise.context != pre.context, premises)):
+                raise fmtErr_(inst, "context are not agree")
+            if premise.proof != StarTerm() or premise.prop != SortTerm():
+                raise fmtErr_(inst, "bad premise {premise}")
+            dfn = premise.environment[op_offset]
+            if len(dfn.context.container) != len(premises):
+                raise fmtErr_(inst, "arity mismatch")
+            if not check_arity_type(dfn, premises):
+                raise fmtErr_(inst, "arg type mismatch")
+            prop = functools.reduce(
+                lambda N, b: subst(N, b[1].proof, b[0]), zip(dfn.names, premises), dfn.prop
             )
-        )
-        return _book
-    elif isinstance(inst, DefInst):
-        premise1 = book[inst.pre1]
-        premise2 = book[inst.pre2]
-        op = inst.op
-        if premise1.environment != premise2.environment:
-            raise fmtErr_(inst, "environments are not agree")
-        if op in map(lambda d: d.op, premise1.environment):
-            raise fmtErr_(inst, f"constant {op} is already defined in the environment")
-        dfn = Definition(
-            op=op, context=premise2.context, body=premise2.proof, prop=premise2.prop
-        )
-        _env = premise1.environment.copy()
-        _env.append(dfn)
-        _book = book.copy()
-        _book.append(
-            Judgement(
-                environment=_env,
-                context=premise1.context,
-                proof=premise1.proof,
-                prop=premise1.prop,
+            _book = book.copy()
+            _book.append(
+                Judgement(
+                    environment=premise.environment,
+                    context=premise.context,
+                    proof=ConstTerm(dfn.op, list(map(lambda p: p.proof, premises))),
+                    prop=prop,
+                )
             )
-        )
-        return _book
-    elif isinstance(inst, DefPrInst):
-        premise1 = book[inst.pre1]
-        premise2 = book[inst.pre2]
-        op = inst.op
-        if premise1.environment != premise2.environment:
-            raise fmtErr_(inst, "environments are not agree")
-        if op in map(lambda d: d.op, premise1.environment):
-            raise fmtErr_(inst, f"constant {op} is already defined in the environment")
-        dfn = Definition(
-            op=op,
-            context=premise2.context,
-            body=StarTerm(),  # Dummy
-            prop=premise2.proof,
-            is_prim=True,
-        )
-        _env = premise1.environment.copy()
-        _env.append(dfn)
-        _book = book.copy()
-        _book.append(
-            Judgement(
-                environment=_env,
-                context=premise1.context,
-                proof=premise1.proof,
-                prop=premise1.prop,
+            return _book
+        case CPInst(_lnum, target):
+            _book = book.copy()
+            _book.append(book[target])
+            return _book
+        case SPInst(_lnum, target, bind):
+            j = book[target]
+            binding = j.context.container[bind]
+            _book = book.copy()
+            _book.append(
+                Judgement(
+                    environment=j.environment,
+                    context=j.context,
+                    proof=parse_term(binding[0]),
+                    prop=binding[1],
+                )
             )
-        )
-        return _book
-    elif isinstance(inst, InstInst):
-        # instとinst-primを区別する必要はない
-        premise = book[inst.pre]
-        premises = list(map(lambda i: book[i], inst.pres))
-        if any(map(lambda pre: premise.environment != pre.environment, premises)):
-            raise fmtErr_(inst, "environments are not agree")
-        if any(map(lambda pre: premise.context != pre.context, premises)):
-            raise fmtErr_(inst, "context are not agree")
-        if premise.proof != StarTerm() or premise.prop != SortTerm():
-            raise fmtErr_(inst, "bad premise {premise}")
-        dfn = premise.environment[inst.op_offset]
-        if len(dfn.context.container) != len(premises):
-            raise fmtErr_(inst, "arity mismatch")
-        if not check_arity_type(dfn, premises):
-            raise fmtErr_(inst, "arg type mismatch")
-        prop = functools.reduce(
-            lambda N, b: subst(N, b[1].proof, b[0]), zip(dfn.names, premises), dfn.prop
-        )
-        _book = book.copy()
-        _book.append(
-            Judgement(
-                environment=premise.environment,
-                context=premise.context,
-                proof=ConstTerm(dfn.op, list(map(lambda p: p.proof, premises))),
-                prop=prop,
-            )
-        )
-        return _book
-    elif isinstance(inst, CPInst):
-        _book = book.copy()
-        _book.append(book[inst.target])
-        return _book
-    elif isinstance(inst, SPInst):
-        j = book[inst.target]
-        binding = j.context.container[inst.bind]
-        _book = book.copy()
-        _book.append(
-            Judgement(
-                environment=j.environment,
-                context=j.context,
-                proof=parse_term(binding[0]),
-                prop=binding[1],
-            )
-        )
-        return _book
-    elif isinstance(inst, EndInst):
-        return book
-    else:
-        raise fmtErr_(inst, "have not implemented")
+            return _book
+        case EndInst(_lnum):
+            return book
+        case _:
+            raise fmtErr_(inst, "have not implemented")
 
 
 def check_arity_type(dfn: Definition, premises: list[Judgement]) -> bool:

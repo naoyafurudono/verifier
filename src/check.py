@@ -1,4 +1,5 @@
 import functools
+import sys
 from dataclasses import dataclass
 from typing import Tuple
 
@@ -147,7 +148,7 @@ class Definition:
 
     @property
     def names(self):
-        return map(lambda b: b[0], self.context.container)
+        return list(map(lambda b: b[0], self.context.container))
 
 
 @dataclass(frozen=True)
@@ -207,7 +208,9 @@ def check(inst: Instruction, book: list[Judgement]) -> list[Judgement]:
             if premise1.context != premise2.context:
                 raise fmtErr_(inst, "contexts are not agree")
             if new_name in premise1.context.params():
-                raise fmtErr_(inst, f"variable {new_name} is already used in the context")
+                raise fmtErr_(
+                    inst, f"variable {new_name} is already used in the context"
+                )
             _book = book.copy()
             _book.append(
                 Judgement(
@@ -227,14 +230,17 @@ def check(inst: Instruction, book: list[Judgement]) -> list[Judgement]:
                 raise fmtErr_(inst, "contexts are not agree")
             if premise1.proof != premise2.context.car()[1]:
                 raise fmtErr_(
-                    inst, "proof of pre1 does not agree with last type of the pre2 context"
+                    inst,
+                    "proof of pre1 does not agree with last type of the pre2 context",
                 )
             _book = book.copy()
             _book.append(
                 Judgement(
                     environment=premise1.environment,
                     context=premise1.context,
-                    proof=PiTerm(premise1.proof, premise2.proof, premise2.context.car()[0]),
+                    proof=PiTerm(
+                        premise1.proof, premise2.proof, premise2.context.car()[0]
+                    ),
                     prop=premise2.prop,
                 )
             )
@@ -251,7 +257,9 @@ def check(inst: Instruction, book: list[Judgement]) -> list[Judgement]:
                 raise fmtErr_(inst, "pre1 must prove Pi type")
             else:
                 if not mb_funtype.t1 == premise2.prop:
-                    raise fmtErr_(inst, "pre1 parameter type does not agree with pre2 type")
+                    raise fmtErr_(
+                        inst, "pre1 parameter type does not agree with pre2 type"
+                    )
                 _book = book.copy()
                 _book.append(
                     Judgement(
@@ -283,7 +291,10 @@ def check(inst: Instruction, book: list[Judgement]) -> list[Judgement]:
             if premise1.prop != mb_pi_term.t2:
                 raise fmtErr_(
                     inst,
-                    f"pre1 must prove pre2.proof's conclusion\npre1.prop:\t{premise1.prop}\nconcl.:\t{mb_pi_term.t2}",
+                    f"""pre1 must prove pre2.proof's conclusion\npre1.prop:\t{premise1.prop}\nconcl.   :\t{mb_pi_term.t2}
+                        premise1: {premise1}
+                        premise2: {premise2}
+                    """,
                 )
 
             _book = book.copy()
@@ -324,7 +335,9 @@ def check(inst: Instruction, book: list[Judgement]) -> list[Judgement]:
             if premise1.environment != premise2.environment:
                 raise fmtErr_(inst, "environments are not agree")
             if op in map(lambda d: d.op, premise1.environment):
-                raise fmtErr_(inst, f"constant {op} is already defined in the environment")
+                raise fmtErr_(
+                    inst, f"constant {op} is already defined in the environment"
+                )
             dfn = Definition(
                 op=op, context=premise2.context, body=premise2.proof, prop=premise2.prop
             )
@@ -346,7 +359,9 @@ def check(inst: Instruction, book: list[Judgement]) -> list[Judgement]:
             if premise1.environment != premise2.environment:
                 raise fmtErr_(inst, "environments are not agree")
             if op in map(lambda d: d.op, premise1.environment):
-                raise fmtErr_(inst, f"constant {op} is already defined in the environment")
+                raise fmtErr_(
+                    inst, f"constant {op} is already defined in the environment"
+                )
             dfn = Definition(
                 op=op,
                 context=premise2.context,
@@ -381,15 +396,15 @@ def check(inst: Instruction, book: list[Judgement]) -> list[Judgement]:
                 raise fmtErr_(inst, "arity mismatch")
             if not check_arity_type(dfn, premises):
                 raise fmtErr_(inst, "arg type mismatch")
-            prop = functools.reduce(
-                lambda N, b: subst(N, b[1].proof, b[0]), zip(dfn.names, premises), dfn.prop
-            )
+
+            pre_proofs = [p.proof for p in premises]
+            prop = subst_all(dfn.prop, dfn.names, pre_proofs)
             _book = book.copy()
             _book.append(
                 Judgement(
                     environment=premise.environment,
                     context=premise.context,
-                    proof=ConstTerm(dfn.op, list(map(lambda p: p.proof, premises))),
+                    proof=ConstTerm(dfn.op, pre_proofs),
                     prop=prop,
                 )
             )

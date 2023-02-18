@@ -166,7 +166,7 @@ class VerificationError(Exception):
 
 
 def fmtErr_(inst: Instruction, msg: str) -> VerificationError:
-    return VerificationError(f"at {inst.lnum}: {inst}\n{msg}")
+    return VerificationError(f"at: {inst}\n{msg}")
 
 
 def check(inst: Instruction, book: list[Judgement]) -> list[Judgement]:

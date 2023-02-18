@@ -146,36 +146,35 @@ def prove_term(
                     return tp, len(insts) - 1
         case AppTerm(t1, t2):
             prop1, pr_index1 = prove_term(env, ctx, t1, insts, index_for_sort)
-            if isinstance(prop1, PiTerm):
-                n1 = prop1
-            else:
-                tmp, pr_index1 = prove_normalize(
+            prop2, pr_index2 = prove_term(env, ctx, t2, insts, index_for_sort)
+
+            # prop1がPiであることを保証
+            if not isinstance(prop1, PiTerm):
+                prop1, pr_index1 = prove_normalize(
                     env, ctx, prop1, pr_index1, insts, index_for_sort
                 )
-                if not isinstance(tmp, PiTerm):
+                if not isinstance(prop1, PiTerm):
                     raise fmtDeriveError("must have Pi term", t1)
-                n1 = tmp
 
-            prop2, pr_index2 = prove_term(env, ctx, t2, insts, index_for_sort)
-            if n1.t1 != prop2:
-                # 引数の型の導出木へのポインタと命題を書き換え
+            # prop1.t1 = prop2を保証
+            if prop1.t1 != prop2:
                 prop2, pr_index2 = prove_normalize(
                     env, ctx, prop2, pr_index2, insts, index_for_sort
                 )
-                if n1.t1 != prop2:
-                    n, pr_index1 = prove_normalize(
-                        env, ctx, n1, pr_index1, insts, index_for_sort
+                if prop1.t1 != prop2:
+                    prop1, pr_index1 = prove_normalize(
+                        env, ctx, prop1, pr_index1, insts, index_for_sort
                     )
-                    if not isinstance(n, PiTerm):
+                    if not isinstance(prop1, PiTerm):
+                        # 静的解析の都合で検査
                         raise DeriveError("never")
-                    n1 = n
-                    if n1.t1 != prop2:
+                    if prop1.t1 != prop2:
                         raise fmtDeriveError(
-                            f"arg type must match Pi param type\n  expect: {n1.t1}\n  actual: {prop2}",
+                            f"arg type must match Pi param type\n  expect: {prop1.t1}\n  actual: {prop2}",
                             t,
                         )
             insts.append(ApplInst(len(insts), pr_index1, pr_index2))
-            return subst(n1.t2, t2, n1.name), len(insts) - 1
+            return subst(prop1.t2, t2, prop1.name), len(insts) - 1
         case LambdaTerm(t1, t2, name):
             # prop1 = B
             prop1, pr_index1 = prove_term(

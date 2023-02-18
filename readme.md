@@ -1,13 +1,26 @@
-# 代数学特論での検証器実装
+# 検証器の作成
 
-https://www.kurims.kyoto-u.ac.jp/~tshun/2022q4t.html
+## 実行方法
 
-`src/`以下が実装
+Python3.11以上が必要。
 
-## 目標
+### automake | autobook
 
-以下を示す証明をかけること、それを検証できること。
+```
+cd src
+python3.11 test.py test/def2 > res
+```
 
-a,b : 互いに素
+### automake
 
-x,yが存在して、ax+by=1が成り立つ
+```
+cd src
+python3.11 derive.py test/def2 > insts
+```
+
+### autobook
+
+```
+cd src
+python3.11 check.py insts > res
+```

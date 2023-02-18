@@ -2,6 +2,24 @@ import functools
 from dataclasses import dataclass
 from typing import Tuple
 
+from fresh_name import Fresh
+from inst import (
+    AbstInst,
+    ApplInst,
+    ConvInst,
+    CPInst,
+    DefInst,
+    DefPrInst,
+    EndInst,
+    FormInst,
+    InstInst,
+    Instruction,
+    SortInst,
+    SPInst,
+    VarInst,
+    WeakInst,
+    scan_inst,
+)
 from parse import (
     AppTerm,
     ConstTerm,
@@ -14,25 +32,7 @@ from parse import (
     alpha_eqv,
     parse_term,
 )
-from fresh_name import Fresh
 from subst import rename, subst, subst_all
-from inst import (
-    AbstInst,
-    ApplInst,
-    CPInst,
-    ConvInst,
-    DefInst,
-    DefPrInst,
-    EndInst,
-    FormInst,
-    InstInst,
-    Instruction,
-    SPInst,
-    SortInst,
-    VarInst,
-    WeakInst,
-    scan_inst,
-)
 
 
 @dataclass(frozen=True)
@@ -268,27 +268,33 @@ def check(inst: Instruction, book: list[Judgement]) -> list[Judgement]:
             raise fmtErr_(inst, "environments are not agree")
         if premise1.context.cdr() != premise2.context:
             raise fmtErr_(inst, "contexts are not agree")
+
         mb_pi_term = premise2.proof
         if not isinstance(mb_pi_term, PiTerm):
             raise fmtErr_(inst, "pre2 must derive Pi term")
-        else:
-            if (
-                premise1.context.car()[0] != mb_pi_term.name
-                or premise1.context.car()[1] != mb_pi_term.t1
-            ):
-                raise fmtErr_(inst, "pre1.context must end with binding of pre2.proof")
-            if premise1.prop != mb_pi_term.t2:
-                raise fmtErr_(inst, f"pre1 must prove pre2.proof's conclusion\npre1.prop:\t{premise1.prop}\nconcl.:\t{mb_pi_term.t2}")
-            _book = book.copy()
-            _book.append(
-                Judgement(
-                    environment=premise2.environment,
-                    context=premise2.context,
-                    proof=LambdaTerm(mb_pi_term.t1, premise1.proof, mb_pi_term.name),
-                    prop=premise2.proof,
-                )
+
+        if (
+            premise1.context.car()[0] != mb_pi_term.name
+            or premise1.context.car()[1] != mb_pi_term.t1
+        ):
+            raise fmtErr_(inst, "pre1.context must end with binding of pre2.proof")
+
+        if premise1.prop != mb_pi_term.t2:
+            raise fmtErr_(
+                inst,
+                f"pre1 must prove pre2.proof's conclusion\npre1.prop:\t{premise1.prop}\nconcl.:\t{mb_pi_term.t2}",
             )
-            return _book
+
+        _book = book.copy()
+        _book.append(
+            Judgement(
+                environment=premise2.environment,
+                context=premise2.context,
+                proof=LambdaTerm(mb_pi_term.t1, premise1.proof, mb_pi_term.name),
+                prop=premise2.proof,
+            )
+        )
+        return _book
     elif isinstance(inst, ConvInst):
         premise1 = book[inst.pre1]
         premise2 = book[inst.pre2]

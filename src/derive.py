@@ -13,29 +13,10 @@ import traceback
 from typing import Tuple
 
 from check import Context, Definition, bd_eqv, normalize
-from inst import (
-    AbstInst,
-    ApplInst,
-    DefInst,
-    EndInst,
-    FormInst,
-    InstInst,
-    Instruction,
-    SortInst,
-    VarInst,
-    WeakInst,
-)
-from parse import (
-    AppTerm,
-    ConstTerm,
-    LambdaTerm,
-    PiTerm,
-    SortTerm,
-    StarTerm,
-    Term,
-    VarTerm,
-    parse_term,
-)
+from inst import (AbstInst, ApplInst, DefInst, EndInst, FormInst, InstInst,
+                  Instruction, SortInst, VarInst, WeakInst)
+from parse import (AppTerm, ConstTerm, LambdaTerm, PiTerm, SortTerm, StarTerm,
+                   Term, VarTerm, parse_term)
 from subst import subst, subst_all
 
 
@@ -246,17 +227,7 @@ def parse_script(lines: list[str]) -> Definition:
 
     return Definition(op, Context(binds), m, n, is_prim=prim_flag)
 
-
-if __name__ == "__main__":
-    import argparse
-
-    apaser = argparse.ArgumentParser(prog="automake")
-    apaser.add_argument("filename")
-    args = apaser.parse_args()
-    filename = args.filename
-
-    with open(filename, "r") as f:
-        lines = f.readlines()
+def derive_lines(lines: list[str]) -> list[Instruction]:
     dfn_scripts: list[list[str]] = []
     dfn_script: list[str] = []
     for line in lines:
@@ -278,12 +249,25 @@ if __name__ == "__main__":
     for i, dfn in enumerate(dfns):
         try:
             prove_def(dfn, dfns[:i], instructions)
-        except Exception as e:
+        except DeriveError as e:
             for inst in instructions:
                 print(inst)
             traceback.print_exc()
             print(f"derivation error at: {dfn}", file=sys.stderr)
-            exit(1)
+            raise e
     instructions.append(EndInst(-1))
+    return instructions
+
+if __name__ == "__main__":
+    import argparse
+
+    apaser = argparse.ArgumentParser(prog="automake")
+    apaser.add_argument("filename")
+    args = apaser.parse_args()
+    filename = args.filename
+
+    with open(filename, "r") as f:
+        lines = f.readlines()
+    instructions = derive_lines(lines)
     for inst in instructions:
         print(inst)
